@@ -18,9 +18,9 @@ export default function LoginPage() {
             <Lock className="text-white" size={24} />
           </div>
           <CardTitle className="text-2xl font-bold text-bordeaux-gradient">
-            Ciao{THERAPIST_NAME ? `, ${THERAPIST_NAME}` : ""}
+            Welcome{THERAPIST_NAME ? `, ${THERAPIST_NAME}` : ""}
           </CardTitle>
-          <CardDescription>Inserisci la password per accedere alla tua agenda</CardDescription>
+          <CardDescription>Enter your password to open your agenda</CardDescription>
         </CardHeader>
         <CardContent>
           <form action={formAction} className="space-y-4 pt-4">
@@ -40,7 +40,7 @@ export default function LoginPage() {
               disabled={pending}
               className="w-full h-12 text-lg rounded-xl bg-bordeaux-gradient hover:opacity-90 border-0 text-white shadow-md"
             >
-              {pending ? "Accesso..." : "Accedi"}
+              {pending ? "Signing in..." : "Sign in"}
             </Button>
           </form>
         </CardContent>

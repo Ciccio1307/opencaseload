@@ -2,7 +2,7 @@
   "name": "sedute",
   "version": "0.1.0",
   "private": true,
-  "description": "Agenda, recuperi e resoconti per l'attività di terapia.",
+  "description": "Sessions, recovery hours and reports for your therapy practice.",
   "license": "MIT",
   "engines": {
     "node": ">=20.9"

@@ -12,7 +12,7 @@ export async function login(_prevState: LoginState, formData: FormData): Promise
 
   const ok = await verifyPassword(password);
   if (!ok) {
-    return { error: 'Password errata, riprova.' };
+    return { error: 'Wrong password, try again.' };
   }
 
   await createSession();
@@ -38,15 +38,15 @@ export async function changePassword(
 
   const ok = await verifyPassword(currentPassword);
   if (!ok) {
-    return { error: 'La password attuale non è corretta.' };
+    return { error: 'Current password is incorrect.' };
   }
 
   if (newPassword.length < 6) {
-    return { error: 'La nuova password deve avere almeno 6 caratteri.' };
+    return { error: 'New password must be at least 6 characters.' };
   }
 
   if (newPassword !== confirmPassword) {
-    return { error: 'Le nuove password non combaciano.' };
+    return { error: 'New passwords do not match.' };
   }
 
   await setPassword(newPassword);

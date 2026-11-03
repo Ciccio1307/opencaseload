@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 
 const secretKey = process.env.SESSION_SECRET;
 if (!secretKey) {
-  throw new Error('SESSION_SECRET non impostata: aggiungila a .env.local (vedi .env.example)');
+  throw new Error('SESSION_SECRET is not set: add it to .env.local (see .env.example)');
 }
 const encodedKey = new TextEncoder().encode(secretKey);
 

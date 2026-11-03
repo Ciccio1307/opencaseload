@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Patient, Session } from "@/types/database";
 import { Clock, UserCheck, CheckCircle2 } from "lucide-react";
 import { recoverSessions } from "@/app/actions/sessions";
+import { LOCALE } from "@/lib/branding";
 
 export function RecoveriesClient({
   initialPatients,
@@ -18,23 +19,23 @@ export function RecoveriesClient({
   const dbPatients = initialPatients;
 
   const handleRecoverSessions = async (sessionsToUpdate: Session[]) => {
-    if (!window.confirm("Vuoi segnare queste ore come recuperate? Scompariranno da questa lista.")) return;
+    if (!window.confirm("Mark these hours as recovered? They will disappear from this list.")) return;
 
     const ids = sessionsToUpdate.map(s => s.id);
 
     const { error } = await recoverSessions(ids);
     if (error) {
-      alert("Errore DB: " + error);
+      alert("Database error: " + error);
       return;
     }
 
-    setDbSessions(dbSessions.map(s => ids.includes(s.id) ? { ...s, status: 'recuperata' } : s));
+    setDbSessions(dbSessions.map(s => ids.includes(s.id) ? { ...s, status: 'recovered' } : s));
   };
 
-  // Filtriamo le sedute che necessitano di recupero
-  const sessionsToRecover = dbSessions.filter(s => s.status === 'assente' || s.status === 'da_recuperare');
+  // Sessions that still need to be recovered
+  const sessionsToRecover = dbSessions.filter(s => s.status === 'absent' || s.status === 'to_recover');
 
-  // Raggruppiamo per paziente per avere un "monte ore" per ciascuno
+  // Group by patient to get the total outstanding hours
   const recoveriesByPatient = sessionsToRecover.reduce((acc, session) => {
     if (!acc[session.patient_id]) {
       const patient = dbPatients.find(p => p.id === session.patient_id);
@@ -57,8 +58,8 @@ export function RecoveriesClient({
     <div className="p-4 space-y-6 pb-8">
       <header className="flex justify-between items-center pt-2">
         <div>
-          <h1 className="text-2xl font-bold text-bordeaux-gradient">Recuperi</h1>
-          <p className="text-muted-foreground text-sm">Monte ore da riprogrammare</p>
+          <h1 className="text-2xl font-bold text-bordeaux-gradient">Recoveries</h1>
+          <p className="text-muted-foreground text-sm">Hours to reschedule</p>
         </div>
       </header>
 
@@ -66,8 +67,8 @@ export function RecoveriesClient({
         <Card className="border-dashed border-2 bg-muted/30">
           <CardContent className="flex flex-col items-center justify-center py-12 text-muted-foreground">
             <UserCheck size={48} className="mb-4 text-green-500/50" />
-            <p className="font-medium text-lg">Tutto in regola!</p>
-            <p className="text-sm text-center mt-1">Nessun paziente ha ore da recuperare.</p>
+            <p className="font-medium text-lg">All caught up!</p>
+            <p className="text-sm text-center mt-1">No patient has hours to recover.</p>
           </CardContent>
         </Card>
       ) : (
@@ -88,12 +89,12 @@ export function RecoveriesClient({
                 </CardHeader>
                 <CardContent className="p-4 pt-2">
                   <p className="text-sm text-muted-foreground mb-3">
-                    Dettaglio assenze:
+                    Absences:
                   </p>
                   <ul className="space-y-2">
                     {record.sessions.map(s => (
                       <li key={s.id} className="flex justify-between items-center text-sm p-2 bg-muted/50 rounded-md">
-                        <span className="font-medium text-foreground/80">{new Date(s.date).toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'short' })}</span>
+                        <span className="font-medium text-foreground/80">{new Date(s.date).toLocaleDateString(LOCALE, { weekday: 'long', day: 'numeric', month: 'short' })}</span>
                         <span className="text-muted-foreground">{s.duration_minutes} min</span>
                       </li>
                     ))}
@@ -105,7 +106,7 @@ export function RecoveriesClient({
                     className="w-full bg-green-600 hover:bg-green-700 border-0 text-white shadow-md"
                   >
                     <CheckCircle2 size={18} className="mr-2" />
-                    Segna come Recuperate
+                    Mark as recovered
                   </Button>
                 </CardFooter>
               </Card>

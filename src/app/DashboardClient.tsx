@@ -7,13 +7,13 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Session, Patient } from "@/types/database";
+import { Session, Patient, STATUS_LABELS } from "@/types/database";
 import Link from "next/link";
 import { Plus, Check, X, Clock, Settings, Users, CalendarDays, CalendarSync, Trash2 } from "lucide-react";
 import { createTherapySession, updateSessionStatus, deleteTherapySession } from "@/app/actions/sessions";
-import { greeting } from "@/lib/branding";
+import { greeting, LOCALE } from "@/lib/branding";
 
-// Helper per inizio/fine settimana
+// Week start/end helper
 const getStartOfWeek = (date: Date) => {
   const d = new Date(date);
   const day = d.getDay();
@@ -32,7 +32,7 @@ export function DashboardClient({
   const [dbSessions, setDbSessions] = useState<Session[]>(initialSessions);
   const dbPatients = initialPatients;
 
-  // Stato Modale
+  // Modal state
   const [isSessionModalOpen, setIsSessionModalOpen] = useState(false);
   const [sessionForm, setSessionForm] = useState({
     patient_id: "",
@@ -49,12 +49,12 @@ export function DashboardClient({
       patient_id: sessionForm.patient_id,
       date: sessionDateTime,
       duration_minutes: sessionForm.duration,
-      status: 'da_recuperare',
+      status: 'to_recover',
       notes: sessionForm.notes
     });
 
     if (error) {
-      alert("Errore DB Seduta: " + error);
+      alert("Database error (session): " + error);
       return;
     }
 
@@ -65,7 +65,7 @@ export function DashboardClient({
     }
   };
 
-  const handleStatusUpdate = async (sessionId: string, newStatus: 'completata' | 'assente') => {
+  const handleStatusUpdate = async (sessionId: string, newStatus: 'completed' | 'absent') => {
     const { data } = await updateSessionStatus(sessionId, newStatus);
     if (data) {
       setDbSessions(dbSessions.map(s => s.id === sessionId ? data : s));
@@ -73,20 +73,20 @@ export function DashboardClient({
   };
 
   const handleDeleteSession = async (sessionId: string) => {
-    if (window.confirm("Sei sicuro di voler eliminare questa seduta?")) {
+    if (window.confirm("Delete this session?")) {
       await deleteTherapySession(sessionId);
       setDbSessions(dbSessions.filter(s => s.id !== sessionId));
     }
   };
 
-  // DATI OGGI
+  // TODAY
   const today = new Date();
   const todaySessions = dbSessions.filter(s => {
     const d = new Date(s.date);
     return d.getDate() === today.getDate() && d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
   });
 
-  // DATI SETTIMANA CORRENTE
+  // CURRENT WEEK
   const startOfWeek = getStartOfWeek(new Date());
   startOfWeek.setHours(0,0,0,0);
   const endOfWeek = new Date(startOfWeek);
@@ -100,7 +100,7 @@ export function DashboardClient({
 
   const groupedToday = todaySessions.reduce((acc, session) => {
     const sessionDate = new Date(session.date);
-    const timeKey = sessionDate.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }) + '_' + session.duration_minutes;
+    const timeKey = sessionDate.toLocaleTimeString(LOCALE, { hour: '2-digit', minute: '2-digit' }) + '_' + session.duration_minutes;
     if (!acc[timeKey]) acc[timeKey] = { date: sessionDate, duration: session.duration_minutes, sessions: [] };
     acc[timeKey].sessions.push(session);
     return acc;
@@ -112,7 +112,7 @@ export function DashboardClient({
 
   const groupedWeek = weekSessions.reduce((acc, session) => {
     const d = new Date(session.date);
-    const dayKey = d.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' });
+    const dayKey = d.toLocaleDateString(LOCALE, { weekday: 'short', day: 'numeric', month: 'short' });
     if (!acc[dayKey]) acc[dayKey] = { date: d, patients: new Set(), totalMinutes: 0 };
     acc[dayKey].patients.add(session.patient_id);
     acc[dayKey].totalMinutes += session.duration_minutes;
@@ -128,7 +128,7 @@ export function DashboardClient({
         <div>
           <h1 className="text-2xl font-bold text-bordeaux-gradient">{greeting(today.getHours())}</h1>
           <p className="text-muted-foreground text-sm capitalize">
-            {today.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' })}
+            {today.toLocaleDateString(LOCALE, { weekday: 'long', day: 'numeric', month: 'long' })}
           </p>
         </div>
         <div className="flex gap-2">
@@ -140,7 +140,7 @@ export function DashboardClient({
           <Button
             size="icon"
             className="rounded-full shadow-lg bg-bordeaux-gradient border-0 text-white hover:opacity-90"
-            aria-label="Nuova seduta"
+            aria-label="New session"
             onClick={() => setIsSessionModalOpen(true)}
           >
             <Plus size={24} />
@@ -151,10 +151,10 @@ export function DashboardClient({
       {/* Toggle View */}
       <div className="flex p-1 bg-muted/50 rounded-xl">
         <button onClick={() => setViewMode('oggi')} className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-2 ${viewMode === 'oggi' ? 'bg-background shadow-sm text-primary' : 'text-muted-foreground'}`}>
-          <CalendarSync size={16} /> Oggi
+          <CalendarSync size={16} /> Today
         </button>
         <button onClick={() => setViewMode('settimana')} className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-2 ${viewMode === 'settimana' ? 'bg-background shadow-sm text-primary' : 'text-muted-foreground'}`}>
-          <CalendarDays size={16} /> Settimana
+          <CalendarDays size={16} /> Week
         </button>
       </div>
 
@@ -163,14 +163,14 @@ export function DashboardClient({
           <div className="grid grid-cols-2 gap-4">
             <Card className="border-primary/20 bg-primary/5">
               <CardHeader className="p-4 pb-2 flex flex-row items-center justify-between">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Pazienti Oggi</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">Patients today</CardTitle>
                 <Users size={16} className="text-primary" />
               </CardHeader>
               <CardContent className="p-4 pt-0"><p className="text-3xl font-bold">{todayPatients}</p></CardContent>
             </Card>
             <Card className="border-primary/20 bg-primary/5">
               <CardHeader className="p-4 pb-2 flex flex-row items-center justify-between">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Ore di Lavoro</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">Hours worked</CardTitle>
                 <Clock size={16} className="text-primary" />
               </CardHeader>
               <CardContent className="p-4 pt-0"><p className="text-3xl font-bold">{(todayMinutesWorked / 60).toFixed(1)}h</p></CardContent>
@@ -178,12 +178,12 @@ export function DashboardClient({
           </div>
 
           <div>
-            <h2 className="text-lg font-semibold mb-4 text-bordeaux-gradient">Appuntamenti</h2>
+            <h2 className="text-lg font-semibold mb-4 text-bordeaux-gradient">Appointments</h2>
             <div className="space-y-6">
               {timeSlots.map((slot, index) => {
-                const startTimeStr = slot.date.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+                const startTimeStr = slot.date.toLocaleTimeString(LOCALE, { hour: '2-digit', minute: '2-digit' });
                 const endDate = new Date(slot.date.getTime() + slot.duration * 60000);
-                const endTimeStr = endDate.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+                const endTimeStr = endDate.toLocaleTimeString(LOCALE, { hour: '2-digit', minute: '2-digit' });
 
                 return (
                   <div key={index} className="relative pl-4 border-l-2 border-primary/30 space-y-3">
@@ -191,7 +191,7 @@ export function DashboardClient({
                     <div className="-mt-1.5 mb-3 flex items-center gap-2">
                       <span className="font-bold text-lg">{startTimeStr} - {endTimeStr}</span>
                       <Badge variant="secondary" className="bg-primary/10 text-primary">{slot.duration} min</Badge>
-                      {slot.sessions.length > 1 && <Badge variant="outline" className="border-orange-200 bg-orange-50 text-orange-700">Multiplo ({slot.sessions.length})</Badge>}
+                      {slot.sessions.length > 1 && <Badge variant="outline" className="border-orange-200 bg-orange-50 text-orange-700">Multiple ({slot.sessions.length})</Badge>}
                     </div>
                     <div className="space-y-3">
                       {slot.sessions.map(session => {
@@ -201,16 +201,16 @@ export function DashboardClient({
                           <Card key={session.id} className="overflow-hidden border-border/60 ml-2 relative hover:shadow-[0_4px_16px_-4px_rgba(124,16,52,0.18)]">
                             <CardContent className="p-0">
                               <div className="flex items-stretch">
-                                <div className={`w-2 shrink-0 ${session.status === 'assente' || session.status === 'da_recuperare' ? 'bg-red-400' : 'bg-primary/40'}`}></div>
+                                <div className={`w-2 shrink-0 ${session.status === 'absent' || session.status === 'to_recover' ? 'bg-red-400' : 'bg-primary/40'}`}></div>
                                 <div className="p-4 flex-1">
                                   <div className="flex justify-between items-center mb-3 pr-8">
                                     <p className="font-bold text-base leading-none">{patient.name}</p>
-                                    <Badge variant={session.status === 'completata' ? 'default' : session.status === 'assente' ? 'destructive' : 'outline'} className={session.status === 'completata' ? 'bg-green-600' : ''}>
-                                      {session.status.replace('_', ' ')}
+                                    <Badge variant={session.status === 'completed' ? 'default' : session.status === 'absent' ? 'destructive' : 'outline'} className={session.status === 'completed' ? 'bg-green-600' : ''}>
+                                      {STATUS_LABELS[session.status]}
                                     </Badge>
                                   </div>
 
-                                  {/* Bottone Elimina */}
+                                  {/* Delete button */}
                                   <button onClick={() => handleDeleteSession(session.id)} className="absolute top-3 right-3 text-muted-foreground hover:text-destructive">
                                     <Trash2 size={18} />
                                   </button>
@@ -218,16 +218,16 @@ export function DashboardClient({
                                     <Button
                                       variant="outline"
                                       className="flex-1 h-10 border-green-200 bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-800"
-                                      onClick={() => handleStatusUpdate(session.id, 'completata')}
+                                      onClick={() => handleStatusUpdate(session.id, 'completed')}
                                     >
-                                      <Check size={18} className="mr-1" /> Presente
+                                      <Check size={18} className="mr-1" /> Present
                                     </Button>
                                     <Button
                                       variant="outline"
                                       className="flex-1 h-10 border-red-200 bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-800"
-                                      onClick={() => handleStatusUpdate(session.id, 'assente')}
+                                      onClick={() => handleStatusUpdate(session.id, 'absent')}
                                     >
-                                      <X size={18} className="mr-1" /> Assente
+                                      <X size={18} className="mr-1" /> Absent
                                     </Button>
                                   </div>
                                 </div>
@@ -244,9 +244,9 @@ export function DashboardClient({
           </div>
         </>
       ) : (
-        // VISTA SETTIMANA
+        // WEEK VIEW
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
-          <h2 className="text-lg font-semibold mb-2 text-bordeaux-gradient">Riepilogo Settimanale</h2>
+          <h2 className="text-lg font-semibold mb-2 text-bordeaux-gradient">Weekly summary</h2>
           {weekDays.map(([dayName, data], index) => (
             <Card key={index} className="border-border/60">
               <CardHeader className="p-4 pb-2 border-b border-border/50 bg-muted/20">
@@ -260,7 +260,7 @@ export function DashboardClient({
                 </div>
               </CardHeader>
               <CardContent className="p-4">
-                <p className="text-sm text-muted-foreground mb-2">Pazienti seguiti:</p>
+                <p className="text-sm text-muted-foreground mb-2">Patients seen:</p>
                 <div className="flex flex-wrap gap-2">
                   {Array.from(data.patients).map(patientId => {
                     const patient = dbPatients.find(p => p.id === patientId);
@@ -277,21 +277,21 @@ export function DashboardClient({
         </div>
       )}
 
-      {/* MODALE NUOVA SEDUTA */}
+      {/* NEW SESSION MODAL */}
       <Dialog open={isSessionModalOpen} onOpenChange={setIsSessionModalOpen}>
         <DialogContent className="w-[90vw] max-w-[400px] rounded-2xl">
           <DialogHeader>
-            <DialogTitle>Aggiungi Seduta</DialogTitle>
+            <DialogTitle>Add session</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label>Paziente *</Label>
+              <Label>Patient *</Label>
               <select
                 className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
                 value={sessionForm.patient_id}
                 onChange={e => setSessionForm({...sessionForm, patient_id: e.target.value})}
               >
-                <option value="">Seleziona paziente...</option>
+                <option value="">Select a patient...</option>
                 {dbPatients.map(p => (
                   <option key={p.id} value={p.id}>{p.name}</option>
                 ))}
@@ -300,7 +300,7 @@ export function DashboardClient({
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Data *</Label>
+                <Label>Date *</Label>
                 <Input
                   type="date"
                   value={sessionForm.date}
@@ -308,7 +308,7 @@ export function DashboardClient({
                 />
               </div>
               <div className="space-y-2">
-                <Label>Orario Inizio *</Label>
+                <Label>Start time *</Label>
                 <Input
                   type="time"
                   value={sessionForm.time}
@@ -318,33 +318,33 @@ export function DashboardClient({
             </div>
 
             <div className="space-y-2">
-              <Label>Durata (minuti) *</Label>
+              <Label>Duration (minutes) *</Label>
               <select
                 className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
                 value={sessionForm.duration}
                 onChange={e => setSessionForm({...sessionForm, duration: parseInt(e.target.value)})}
               >
-                <option value={30}>30 minuti</option>
-                <option value={45}>45 minuti</option>
-                <option value={60}>60 minuti (1 ora)</option>
-                <option value={90}>90 minuti (1.5 ore)</option>
-                <option value={120}>120 minuti (2 ore)</option>
+                <option value={30}>30 minutes</option>
+                <option value={45}>45 minutes</option>
+                <option value={60}>60 minutes (1 hour)</option>
+                <option value={90}>90 minutes (1.5 hours)</option>
+                <option value={120}>120 minutes (2 hours)</option>
               </select>
             </div>
 
             <div className="space-y-2">
-              <Label>Note (opzionale)</Label>
+              <Label>Notes (optional)</Label>
               <Input
                 value={sessionForm.notes}
                 onChange={e => setSessionForm({...sessionForm, notes: e.target.value})}
-                placeholder="Es. Terapia di gruppo..."
+                placeholder="E.g. Group therapy..."
               />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsSessionModalOpen(false)} className="w-full sm:w-auto">Annulla</Button>
+            <Button variant="outline" onClick={() => setIsSessionModalOpen(false)} className="w-full sm:w-auto">Cancel</Button>
             <Button onClick={handleSaveSession} className="w-full sm:w-auto bg-bordeaux-gradient text-white border-0">
-              Salva in Agenda
+              Save to agenda
             </Button>
           </DialogFooter>
         </DialogContent>

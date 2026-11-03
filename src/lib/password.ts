@@ -6,9 +6,9 @@ import { supabaseAdmin } from '@/lib/supabaseAdmin';
 const scryptAsync = promisify(scrypt);
 const KEY_LENGTH = 64;
 
-// Password provvisoria di primo accesso, usata solo finché non ne viene
-// impostata una dalle Impostazioni: da quel momento in poi vale esclusivamente
-// l'hash salvato nel database. Va configurata in .env.local (vedi .env.example).
+// First-run password, used only until one is set from Settings: from then on
+// only the hash stored in the database is valid. Configure it in .env.local
+// (see .env.example).
 const INITIAL_PASSWORD = process.env.APP_INITIAL_PASSWORD;
 
 async function hashPassword(password: string): Promise<string> {
@@ -50,7 +50,7 @@ export async function verifyPassword(password: string): Promise<boolean> {
 
   if (!INITIAL_PASSWORD) {
     console.warn(
-      '[auth] Nessuna password configurata: imposta APP_INITIAL_PASSWORD in .env.local alla prima installazione.'
+      '[auth] No password configured: set APP_INITIAL_PASSWORD in .env.local on first install.'
     );
     return false;
   }

@@ -9,8 +9,8 @@ export function BottomNav() {
   
   const navItems = [
     { label: "Dashboard", href: "/", icon: Home },
-    { label: "Pazienti", href: "/patients", icon: Users },
-    { label: "Recuperi", href: "/recoveries", icon: RotateCcw },
+    { label: "Patients", href: "/patients", icon: Users },
+    { label: "Recoveries", href: "/recoveries", icon: RotateCcw },
   ];
 
   if (pathname === '/login') return null;

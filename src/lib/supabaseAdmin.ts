@@ -6,14 +6,14 @@ const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!supabaseUrl || !serviceRoleKey) {
   throw new Error(
-    'SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY non impostate: aggiungile a .env.local (vedi .env.example)'
+    'SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY are not set: add them to .env.local (see .env.example)'
   );
 }
 
 /**
- * Client Supabase con la service role key: bypassa la Row Level Security ed
- * è quindi utilizzabile SOLO in codice server-only (Server Actions/DAL).
- * Non importare mai questo file da un componente client.
+ * Supabase client using the service role key: it bypasses Row Level Security
+ * and may therefore be used ONLY in server-only code (Server Actions/DAL).
+ * Never import this file from a client component.
  */
 export const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
   auth: { persistSession: false },

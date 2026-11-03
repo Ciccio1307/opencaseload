@@ -23,13 +23,13 @@ export function PatientsClient({
   const sessions = initialSessions;
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Stato per il mese da esportare (di default il mese corrente YYYY-MM)
+  // Month being exported (defaults to the current month, YYYY-MM)
   const [exportMonth, setExportMonth] = useState(() => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
   });
 
-  // Gestione Modale (Nuovo / Modifica)
+  // Modal state (new / edit)
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingPatient, setEditingPatient] = useState<Patient | null>(null);
   const [formData, setFormData] = useState({ name: "", phone: "", notes: "" });
@@ -49,10 +49,10 @@ export function PatientsClient({
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm("Sei sicuro di voler eliminare questo paziente? Tutti i suoi dati verranno persi.")) {
+    if (window.confirm("Delete this patient? All their data will be lost.")) {
       const { error } = await deletePatient(id);
       if (error) {
-        alert("Errore DB: " + error);
+        alert("Database error: " + error);
         return;
       }
       setPatients(patients.filter(p => p.id !== id));
@@ -72,7 +72,7 @@ export function PatientsClient({
       const { data, error } = await updatePatient(editingPatient.id, input);
 
       if (error) {
-        alert("Errore DB: " + error);
+        alert("Database error: " + error);
         return;
       }
 
@@ -83,7 +83,7 @@ export function PatientsClient({
       const { data, error } = await createPatient(input);
 
       if (error) {
-        alert("Errore DB: " + error);
+        alert("Database error: " + error);
         return;
       }
 
@@ -99,26 +99,26 @@ export function PatientsClient({
       {/* Header */}
       <header className="flex justify-between items-center pt-2">
         <div>
-          <h1 className="text-2xl font-bold text-bordeaux-gradient">Pazienti</h1>
-          <p className="text-muted-foreground text-sm">Gestione anagrafica ({patients.length})</p>
+          <h1 className="text-2xl font-bold text-bordeaux-gradient">Patients</h1>
+          <p className="text-muted-foreground text-sm">Patient records ({patients.length})</p>
         </div>
         <Button
           onClick={handleOpenAdd}
           size="icon"
           className="rounded-full shadow-lg bg-bordeaux-gradient border-0 text-white hover:opacity-90"
-          aria-label="Nuovo paziente"
+          aria-label="New patient"
         >
           <UserPlus size={24} />
         </Button>
       </header>
 
-      {/* Ricerca e Filtro Mese */}
+      {/* Search and month filter */}
       <div className="space-y-3">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
           <input
             type="text"
-            placeholder="Cerca paziente..."
+            placeholder="Search patients..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
@@ -126,7 +126,7 @@ export function PatientsClient({
         </div>
 
         <div className="flex items-center gap-2 px-1">
-          <Label className="text-sm text-muted-foreground whitespace-nowrap">Resoconti di:</Label>
+          <Label className="text-sm text-muted-foreground whitespace-nowrap">Reports for:</Label>
           <Input
             type="month"
             value={exportMonth}
@@ -136,17 +136,17 @@ export function PatientsClient({
         </div>
       </div>
 
-      {/* Lista Pazienti */}
+      {/* Patient list */}
       <div className="space-y-4">
         {filteredPatients.length === 0 && (
           <Card className="border-dashed border-2 bg-muted/30">
             <CardContent className="flex flex-col items-center justify-center py-12 text-muted-foreground">
               <Users size={48} className="mb-4 text-primary/40" />
               <p className="font-medium text-lg">
-                {searchQuery ? "Nessun paziente trovato." : "Ancora nessun paziente qui."}
+                {searchQuery ? "No patients found." : "No patients yet."}
               </p>
               <p className="text-sm text-center mt-1">
-                {searchQuery ? "Prova con un altro nome." : "Tocca il pulsante in alto a destra per aggiungerne uno."}
+                {searchQuery ? "Try a different name." : "Tap the button in the top right to add one."}
               </p>
             </CardContent>
           </Card>
@@ -155,9 +155,9 @@ export function PatientsClient({
         {filteredPatients.map((patient) => {
           const patientSessions = sessions.filter(s => s.patient_id === patient.id);
 
-          // Filtra le sessioni per il mese selezionato per l'export
+          // Filter sessions by the month selected for export
           const exportSessions = patientSessions.filter(s => {
-            if (!exportMonth) return true; // se il campo è vuoto esporta tutto
+            if (!exportMonth) return true; // empty field exports everything
             return s.date.startsWith(exportMonth);
           });
 
@@ -171,11 +171,11 @@ export function PatientsClient({
                   <div>
                     <p className="font-bold text-lg">{patient.name}</p>
                     <p className="text-sm text-muted-foreground mt-1">
-                      {patient.parent_contact || "Nessun recapito"}
+                      {patient.parent_contact || "No contact"}
                     </p>
                   </div>
                   <Badge variant="outline" className="bg-primary/5 border-primary/20 text-primary whitespace-nowrap">
-                    {totalHoursAllTime} h tot.
+                    {totalHoursAllTime} h total
                   </Badge>
                 </div>
                 {patient.notes && (
@@ -184,7 +184,7 @@ export function PatientsClient({
                   </p>
                 )}
 
-                {/* Azioni Modifica / Elimina in alto a destra */}
+                {/* Edit / delete actions, top right */}
                 <div className="absolute top-3 right-2 flex flex-col gap-1">
                   <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary" onClick={() => handleOpenEdit(patient)}>
                     <Pencil size={16} />
@@ -197,7 +197,7 @@ export function PatientsClient({
               </CardContent>
               <CardFooter className="p-4 pt-0 flex gap-2 border-t border-border/30 mt-3 pt-3 flex-col">
                 <div className="text-xs text-center w-full text-muted-foreground mb-1">
-                  Esporta {exportSessions.length} sedute ({totalHoursExport} h) per il mese scelto:
+                  Export {exportSessions.length} sessions ({totalHoursExport} h) for the selected month:
                 </div>
                 <div className="flex gap-2 w-full">
                   <Button
@@ -221,44 +221,44 @@ export function PatientsClient({
         })}
       </div>
 
-      {/* Modale Aggiungi / Modifica */}
+      {/* Add / edit modal */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="w-[90vw] max-w-[400px] rounded-2xl">
           <DialogHeader>
-            <DialogTitle>{editingPatient ? 'Modifica Paziente' : 'Nuovo Paziente'}</DialogTitle>
+            <DialogTitle>{editingPatient ? 'Edit patient' : 'New patient'}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Nome e Cognome *</Label>
+              <Label htmlFor="name">Full name *</Label>
               <Input
                 id="name"
                 value={formData.name}
                 onChange={e => setFormData({...formData, name: e.target.value})}
-                placeholder="Es. Giulia Verdi"
+                placeholder="E.g. Jane Doe"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="phone">Recapito Genitore</Label>
+              <Label htmlFor="phone">Parent contact</Label>
               <Input
                 id="phone"
                 value={formData.phone}
                 onChange={e => setFormData({...formData, phone: e.target.value})}
-                placeholder="Es. +39 333 1234567"
+                placeholder="E.g. +39 333 1234567"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="notes">Note (opzionale)</Label>
+              <Label htmlFor="notes">Notes (optional)</Label>
               <Input
                 id="notes"
                 value={formData.notes}
                 onChange={e => setFormData({...formData, notes: e.target.value})}
-                placeholder="Informazioni utili..."
+                placeholder="Useful information..."
               />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDialogOpen(false)} className="w-full sm:w-auto">Annulla</Button>
-            <Button onClick={handleSave} className="w-full sm:w-auto bg-bordeaux-gradient text-white border-0">Salva</Button>
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)} className="w-full sm:w-auto">Cancel</Button>
+            <Button onClick={handleSave} className="w-full sm:w-auto bg-bordeaux-gradient text-white border-0">Save</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

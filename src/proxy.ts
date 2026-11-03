@@ -6,16 +6,16 @@ export async function proxy(request: NextRequest) {
   const sessionCookie = request.cookies.get('session')
   const isLoginPage = request.nextUrl.pathname.startsWith('/login')
 
-  // Controllo ottimistico: valida la firma del cookie di sessione.
-  // La vera autorizzazione viene rifatta lato server in ogni Server Action (vedi src/lib/dal.ts).
+  // Optimistic check: validate the session cookie signature.
+  // The real authorisation is repeated server-side in every Server Action (see src/lib/dal.ts).
   const isAuthorized = await getSessionFromToken(sessionCookie?.value)
 
-  // Se l'utente non è autenticato e non è sulla pagina di login, reindirizza a /login
+  // If the user is not authenticated and is not on the login page, redirect to /login
   if (!isAuthorized && !isLoginPage) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // Se l'utente è autenticato e cerca di andare su /login, reindirizza alla home /
+  // If the user is authenticated and tries to open /login, redirect to the home page
   if (isAuthorized && isLoginPage) {
     return NextResponse.redirect(new URL('/', request.url))
   }
@@ -26,7 +26,7 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Esclude i path interni di Next.js e i file statici
+     * Exclude Next.js internals and static files
      */
     '/((?!api|_next/static|_next/image|favicon.ico|icon|apple-icon|manifest.webmanifest|sitemap.xml|robots.txt).*)',
   ],

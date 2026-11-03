@@ -4,9 +4,9 @@ import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/session';
 
 /**
- * Verifica che la richiesta sia autenticata. Da chiamare all'inizio di ogni
- * Server Action e di ogni funzione che legge/scrive dati sensibili: il proxy
- * fa solo un controllo ottimistico, questa è la vera linea di difesa.
+ * Ensures the request is authenticated. Call it at the start of every Server
+ * Action and every function that reads or writes sensitive data: the proxy
+ * only performs an optimistic check, this is the real line of defence.
  */
 export const verifySession = cache(async () => {
   const isAuthorized = await getSession();

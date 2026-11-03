@@ -13,8 +13,8 @@ export default function SettingsPage() {
     <div className="p-4 space-y-6 pb-8">
       <header className="flex justify-between items-center pt-2">
         <div>
-          <h1 className="text-2xl font-bold text-bordeaux-gradient">Impostazioni</h1>
-          <p className="text-muted-foreground text-sm">Gestisci il tuo account</p>
+          <h1 className="text-2xl font-bold text-bordeaux-gradient">Settings</h1>
+          <p className="text-muted-foreground text-sm">Manage your account</p>
         </div>
       </header>
 
@@ -22,16 +22,16 @@ export default function SettingsPage() {
         <CardHeader>
           <CardTitle className="text-lg flex items-center">
             <Settings className="mr-2" size={20} />
-            Cambia Password
+            Change password
           </CardTitle>
           <CardDescription>
-            Modifica la password per accedere all&apos;app.
+            Update the password used to sign in.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form action={formAction} className="space-y-4">
             <div>
-              <label className="text-sm font-medium mb-1 block">Password Attuale</label>
+              <label className="text-sm font-medium mb-1 block">Current password</label>
               <input
                 type="password"
                 name="currentPassword"
@@ -40,7 +40,7 @@ export default function SettingsPage() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-1 block">Nuova Password</label>
+              <label className="text-sm font-medium mb-1 block">New password</label>
               <input
                 type="password"
                 name="newPassword"
@@ -49,7 +49,7 @@ export default function SettingsPage() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-1 block">Ripeti Nuova Password</label>
+              <label className="text-sm font-medium mb-1 block">Confirm new password</label>
               <input
                 type="password"
                 name="confirmPassword"
@@ -59,11 +59,11 @@ export default function SettingsPage() {
             </div>
 
             {state?.error && <p className="text-red-500 text-sm">{state.error}</p>}
-            {state?.success && <p className="text-green-600 text-sm font-medium">Password aggiornata con successo!</p>}
+            {state?.success && <p className="text-green-600 text-sm font-medium">Password updated successfully!</p>}
 
             <Button type="submit" disabled={pending} className="w-full bg-bordeaux-gradient hover:opacity-90 border-0 text-white">
               <Save size={18} className="mr-2" />
-              Salva Password
+              Save password
             </Button>
           </form>
         </CardContent>
@@ -72,7 +72,7 @@ export default function SettingsPage() {
       <form action={logout}>
         <Button type="submit" variant="outline" className="w-full border-red-200 text-red-600 hover:bg-red-50">
           <LogOut size={18} className="mr-2" />
-          Esci dall&apos;app (Logout)
+          Sign out
         </Button>
       </form>
     </div>

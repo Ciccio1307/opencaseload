@@ -1,4 +1,12 @@
-export type SessionStatus = 'completata' | 'assente' | 'da_recuperare' | 'recuperata';
+export type SessionStatus = 'scheduled' | 'completed' | 'absent' | 'to_recover' | 'recovered';
+
+export const STATUS_LABELS: Record<SessionStatus, string> = {
+  scheduled: 'Scheduled',
+  completed: 'Completed',
+  absent: 'Absent',
+  to_recover: 'To recover',
+  recovered: 'Recovered',
+};
 
 export interface Patient {
   id: string;

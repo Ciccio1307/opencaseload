@@ -1,15 +1,15 @@
 # Contributing
 
-Grazie per l'interesse! Questo progetto è piccolo e volutamente semplice: le
-contribuzioni più utili sono bug fix, test e miglioramenti alla documentazione.
+Thanks for your interest! This project is small and deliberately simple: the
+most useful contributions are bug fixes, tests and documentation improvements.
 
-## Setup locale
+## Local setup
 
-1. Crea un progetto Supabase e esegui `supabase/schema.sql` nel SQL Editor.
-2. `cp .env.example .env.local` e compila i valori.
+1. Create a Supabase project and run `supabase/schema.sql` in the SQL Editor.
+2. `cp .env.example .env.local` and fill in the values.
 3. `npm install && npm run dev`.
 
-## Prima di aprire una pull request
+## Before opening a pull request
 
 ```bash
 npm run lint
@@ -17,13 +17,13 @@ npx tsc --noEmit
 npm run build
 ```
 
-- Mantieni le modifiche piccole e con un solo scopo.
-- Scrivi i messaggi di commit in forma imperativa (es. `Fix month filter in
+- Keep changes small and focused on one thing.
+- Write commit messages in the imperative mood (e.g. `Fix month filter in
   patient export`).
-- Non inserire dati reali di pazienti: usa dati inventati.
-- Per modifiche grandi, apri prima una issue per discuterne.
+- Never include real patient data: use invented data only.
+- For larger changes, open an issue first to discuss the approach.
 
-## Segnalazioni
+## Reporting issues
 
-Quando apri una issue, non includere nomi, contatti o altri dati personali.
-Per problemi di sicurezza usa le indicazioni in `SECURITY.md`.
+When you open an issue, do not include names, contacts or any other personal
+data. For security problems, follow [SECURITY.md](SECURITY.md).

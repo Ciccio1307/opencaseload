@@ -1,22 +1,22 @@
 # Security
 
-## Segnalare una vulnerabilità
+## Reporting a vulnerability
 
-Non aprire una issue pubblica. Scrivi in privato al maintainer indicando:
+Please do not open a public issue. Contact the maintainer privately with:
 
-- versione o commit interessato
-- passi per riprodurre il problema
-- impatto stimato
+- the affected version or commit
+- steps to reproduce the problem
+- the estimated impact
 
-Riceverai una risposta appena possibile; il fix verrà pubblicato insieme a un
-avviso, se necessario.
+You will get a reply as soon as possible; the fix will be released together with
+an advisory, if needed.
 
-## Note per chi ospita l'app
+## Notes for people hosting the app
 
-- Tieni `SUPABASE_SERVICE_ROLE_KEY` e `SESSION_SECRET` solo nelle variabili
-  d'ambiente dell'host, mai nel repository.
-- Cambia `APP_INITIAL_PASSWORD` al primo accesso dalle Impostazioni.
-- Non disabilitare la Row Level Security: l'app usa la service role key lato
-  server e non ha bisogno di policy pubbliche.
-- Fai backup periodici del database e conserva i dati dei pazienti secondo le
-  normative applicabili.
+- Keep `SUPABASE_SERVICE_ROLE_KEY` and `SESSION_SECRET` only in the host's
+  environment variables, never in the repository.
+- Change `APP_INITIAL_PASSWORD` at first sign-in from Settings.
+- Do not disable Row Level Security: the app uses the service role key on the
+  server and needs no public policies.
+- Back up the database regularly and retain patient data in line with the
+  applicable regulations.

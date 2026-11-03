@@ -48,7 +48,7 @@ export async function recoverSessions(ids: string[]): Promise<Result<null>> {
   await verifySession();
   const { error } = await supabaseAdmin
     .from('sessions')
-    .update({ status: 'recuperata' })
+    .update({ status: 'recovered' })
     .in('id', ids);
   return { data: null, error: error?.message ?? null };
 }
