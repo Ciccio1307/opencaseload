@@ -1,13 +1,14 @@
 <div align="center">
 
-# 🗓️ Sedute
+# 🗓️ OpenCaseload
 
-**The agenda for people who work with people.**
+**Your caseload, without the spreadsheet.**
 
-Patients, sessions, recovery hours and monthly reports.
-All in one place, on your phone, without scattered spreadsheets.
+Open-source, self-hosted session tracking for therapists: patients, agenda,
+recovery hours and monthly reports. All in one place, on your phone.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-7c1034?style=for-the-badge)](LICENSE)
+[![CI](https://github.com/Ciccio1307/opencaseload/actions/workflows/ci.yml/badge.svg)](https://github.com/Ciccio1307/opencaseload/actions/workflows/ci.yml)
 [![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org)
 [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ecf8e?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-ff7a59?style=for-the-badge)](#-contributing)
@@ -16,14 +17,14 @@ All in one place, on your phone, without scattered spreadsheets.
 
 ---
 
-## 👋 Why Sedute
+## 👋 Why OpenCaseload
 
 Therapists — speech therapists, psychologists, physiotherapists, educators —
 spend their days between sessions, commutes and parents to call back. The hours
 log, though, often stays a notebook or a spreadsheet updated in the evening, in
 a hurry.
 
-**Sedute** exists to take that weight away: an app that fits in your pocket,
+**OpenCaseload** exists to take that weight away: an app that fits in your pocket,
 installs on your phone's home screen and answers one question — *how many hours
 did I work, and how many do I still owe?*
 
@@ -67,7 +68,7 @@ cp .env.example .env.local
 | `SUPABASE_SERVICE_ROLE_KEY` | ✅ | Service role key (server only) |
 | `SESSION_SECRET` | ✅ | Random string used to sign cookies (`openssl rand -base64 32`) |
 | `APP_INITIAL_PASSWORD` | first run | Password until you change it from Settings |
-| `NEXT_PUBLIC_APP_NAME` | — | App name (default `Sedute`) |
+| `NEXT_PUBLIC_APP_NAME` | — | App name (default `OpenCaseload`) |
 | `NEXT_PUBLIC_APP_SHORT_NAME` | — | Short name for the home-screen icon |
 | `NEXT_PUBLIC_APP_DESCRIPTION` | — | Manifest and SEO description |
 | `NEXT_PUBLIC_THERAPIST_NAME` | — | Your name, shown in the greeting |
@@ -96,7 +97,7 @@ Any Node host works too: `npm run build && npm start`.
 
 ## 🔐 Privacy, plainly
 
-Sedute stores names and contacts of real people, often minors. So:
+OpenCaseload stores names and contacts of real people, often minors. So:
 
 - **Whoever deploys an instance is the data controller.** The maintainer runs
   no hosted service and never sees your data.

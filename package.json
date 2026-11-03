@@ -1,8 +1,8 @@
 {
-  "name": "sedute",
+  "name": "opencaseload",
   "version": "0.1.0",
   "private": true,
-  "description": "Sessions, recovery hours and reports for your therapy practice.",
+  "description": "Open-source caseload management for therapists: sessions, recovery hours and reports.",
   "license": "MIT",
   "engines": {
     "node": ">=20.9"

@@ -1,4 +1,4 @@
--- Base schema for Sedute.
+-- Base schema for OpenCaseload.
 -- Run it once in the Supabase SQL Editor on an empty project.
 
 create extension if not exists "pgcrypto";

@@ -8,11 +8,11 @@
 
 const clean = (value: string | undefined) => value?.trim() || undefined;
 
-export const APP_NAME = clean(process.env.NEXT_PUBLIC_APP_NAME) ?? "Sedute";
+export const APP_NAME = clean(process.env.NEXT_PUBLIC_APP_NAME) ?? "OpenCaseload";
 export const APP_SHORT_NAME = clean(process.env.NEXT_PUBLIC_APP_SHORT_NAME) ?? APP_NAME;
 export const APP_DESCRIPTION =
   clean(process.env.NEXT_PUBLIC_APP_DESCRIPTION) ??
-  "Sessions, recovery hours and reports for your therapy practice.";
+  "Open-source caseload management for therapists: sessions, recovery hours and reports.";
 export const THERAPIST_NAME = clean(process.env.NEXT_PUBLIC_THERAPIST_NAME) ?? "";
 
 /** Locale used for dates and times (configurable per instance). */
