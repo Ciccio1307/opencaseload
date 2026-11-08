@@ -1,6 +1,9 @@
 <div align="center">
 
-# 🗓️ OpenCaseload
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/logo/logo-dark.svg">
+  <img src="docs/logo/logo-light.svg" alt="OpenCaseload" width="420">
+</picture>
 
 **Your caseload, without the spreadsheet.**
 
@@ -143,6 +146,7 @@ src/
 supabase/
   schema.sql           database schema (new projects)
   migrations/          changes for existing databases
+docs/logo/             logo (mark + light/dark wordmark, SVG)
 docs/screenshots/      README images (invented data)
 ```
 

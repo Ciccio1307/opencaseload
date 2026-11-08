@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="OpenCaseload">
+  <defs>
+    <linearGradient id="oc-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7c1034"/>
+      <stop offset="1" stop-color="#4a041b"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="url(#oc-bg)"/>
+  <!-- Hours still owed: the faint part of the ring -->
+  <circle cx="256" cy="256" r="150" fill="none" stroke="#f7c1ab" stroke-opacity="0.32" stroke-width="36"/>
+  <!-- Hours worked: the open ring, starting at 12 o'clock -->
+  <circle cx="256" cy="256" r="150" fill="none" stroke="#ffffff" stroke-width="36" stroke-linecap="round"
+          stroke-dasharray="706.9 942.5" transform="rotate(-90 256 256)"/>
+  <!-- Clock hands -->
+  <path d="M256 168 V256 H318" fill="none" stroke="#ffffff" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
