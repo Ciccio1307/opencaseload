@@ -7,19 +7,12 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Session, Patient, STATUS_LABELS } from "@/types/database";
+import { Session, Patient, STATUS_LABELS, isWorkedSession } from "@/types/database";
 import Link from "next/link";
 import { Plus, Check, X, Clock, Settings, Users, CalendarDays, CalendarSync, Trash2 } from "lucide-react";
 import { createTherapySession, updateSessionStatus, deleteTherapySession } from "@/app/actions/sessions";
-import { greeting, LOCALE } from "@/lib/branding";
-
-// Week start/end helper
-const getStartOfWeek = (date: Date) => {
-  const d = new Date(date);
-  const day = d.getDay();
-  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-  return new Date(d.setDate(diff));
-};
+import { greeting } from "@/lib/branding";
+import { dayKey, formatDate, formatTime, weekDayKeys, zonedParts, zonedToUtcISO } from "@/lib/dates";
 
 export function DashboardClient({
   initialPatients,
@@ -36,7 +29,7 @@ export function DashboardClient({
   const [isSessionModalOpen, setIsSessionModalOpen] = useState(false);
   const [sessionForm, setSessionForm] = useState({
     patient_id: "",
-    date: new Date().toISOString().split('T')[0],
+    date: dayKey(new Date()),
     time: "15:00",
     duration: 60,
     notes: ""
@@ -44,12 +37,12 @@ export function DashboardClient({
 
   const handleSaveSession = async () => {
     if (!sessionForm.patient_id) return;
-    const sessionDateTime = new Date(`${sessionForm.date}T${sessionForm.time}:00`).toISOString();
+    const sessionDateTime = zonedToUtcISO(sessionForm.date, sessionForm.time);
     const { data, error } = await createTherapySession({
       patient_id: sessionForm.patient_id,
       date: sessionDateTime,
       duration_minutes: sessionForm.duration,
-      status: 'to_recover',
+      status: 'scheduled',
       notes: sessionForm.notes
     });
 
@@ -80,42 +73,37 @@ export function DashboardClient({
   };
 
   // TODAY
+  // All day/week grouping happens in the instance time zone (see lib/dates.ts)
   const today = new Date();
-  const todaySessions = dbSessions.filter(s => {
-    const d = new Date(s.date);
-    return d.getDate() === today.getDate() && d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
-  });
+  const todayKey = dayKey(today);
+  const todaySessions = dbSessions.filter(s => dayKey(s.date) === todayKey);
 
-  // CURRENT WEEK
-  const startOfWeek = getStartOfWeek(new Date());
-  startOfWeek.setHours(0,0,0,0);
-  const endOfWeek = new Date(startOfWeek);
-  endOfWeek.setDate(endOfWeek.getDate() + 6);
-  endOfWeek.setHours(23,59,59,999);
-
-  const weekSessions = dbSessions.filter(s => {
-    const d = new Date(s.date);
-    return d >= startOfWeek && d <= endOfWeek;
-  });
+  // CURRENT WEEK (Monday to Sunday)
+  const thisWeek = new Set(weekDayKeys(today));
+  const weekSessions = dbSessions.filter(s => thisWeek.has(dayKey(s.date)));
 
   const groupedToday = todaySessions.reduce((acc, session) => {
     const sessionDate = new Date(session.date);
-    const timeKey = sessionDate.toLocaleTimeString(LOCALE, { hour: '2-digit', minute: '2-digit' }) + '_' + session.duration_minutes;
+    const timeKey = formatTime(sessionDate) + '_' + session.duration_minutes;
     if (!acc[timeKey]) acc[timeKey] = { date: sessionDate, duration: session.duration_minutes, sessions: [] };
     acc[timeKey].sessions.push(session);
     return acc;
   }, {} as Record<string, { date: Date, duration: number, sessions: Session[] }>);
 
   const timeSlots = Object.values(groupedToday).sort((a, b) => a.date.getTime() - b.date.getTime());
-  const todayMinutesWorked = timeSlots.reduce((acc, slot) => acc + slot.duration, 0);
+  // Only slots where at least one session actually took place count as worked
+  // (a group slot counts once, however many patients attended).
+  const todayMinutesWorked = timeSlots
+    .filter(slot => slot.sessions.some(isWorkedSession))
+    .reduce((acc, slot) => acc + slot.duration, 0);
   const todayPatients = todaySessions.length;
 
   const groupedWeek = weekSessions.reduce((acc, session) => {
     const d = new Date(session.date);
-    const dayKey = d.toLocaleDateString(LOCALE, { weekday: 'short', day: 'numeric', month: 'short' });
-    if (!acc[dayKey]) acc[dayKey] = { date: d, patients: new Set(), totalMinutes: 0 };
-    acc[dayKey].patients.add(session.patient_id);
-    acc[dayKey].totalMinutes += session.duration_minutes;
+    const dayLabel = formatDate(d, { weekday: 'short', day: 'numeric', month: 'short' });
+    if (!acc[dayLabel]) acc[dayLabel] = { date: d, patients: new Set(), totalMinutes: 0 };
+    acc[dayLabel].patients.add(session.patient_id);
+    acc[dayLabel].totalMinutes += session.duration_minutes;
     return acc;
   }, {} as Record<string, { date: Date, patients: Set<string>, totalMinutes: number }>);
 
@@ -126,9 +114,9 @@ export function DashboardClient({
       {/* Header */}
       <header className="flex justify-between items-center pt-2">
         <div>
-          <h1 className="text-2xl font-bold text-bordeaux-gradient">{greeting(today.getHours())}</h1>
+          <h1 className="text-2xl font-bold text-bordeaux-gradient">{greeting(zonedParts(today).hour)}</h1>
           <p className="text-muted-foreground text-sm capitalize">
-            {today.toLocaleDateString(LOCALE, { weekday: 'long', day: 'numeric', month: 'long' })}
+            {formatDate(today, { weekday: 'long', day: 'numeric', month: 'long' })}
           </p>
         </div>
         <div className="flex gap-2">
@@ -181,9 +169,9 @@ export function DashboardClient({
             <h2 className="text-lg font-semibold mb-4 text-bordeaux-gradient">Appointments</h2>
             <div className="space-y-6">
               {timeSlots.map((slot, index) => {
-                const startTimeStr = slot.date.toLocaleTimeString(LOCALE, { hour: '2-digit', minute: '2-digit' });
+                const startTimeStr = formatTime(slot.date);
                 const endDate = new Date(slot.date.getTime() + slot.duration * 60000);
-                const endTimeStr = endDate.toLocaleTimeString(LOCALE, { hour: '2-digit', minute: '2-digit' });
+                const endTimeStr = formatTime(endDate);
 
                 return (
                   <div key={index} className="relative pl-4 border-l-2 border-primary/30 space-y-3">

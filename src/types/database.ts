@@ -8,6 +8,13 @@ export const STATUS_LABELS: Record<SessionStatus, string> = {
   recovered: 'Recovered',
 };
 
+/** A session that actually took place: the only kind counted as hours worked. */
+export const isWorkedSession = (s: Pick<Session, 'status'>) => s.status === 'completed';
+
+/** A missed session, whether still to be recovered or already recovered. */
+export const isMissedSession = (s: Pick<Session, 'status'>) =>
+  s.status === 'absent' || s.status === 'to_recover' || s.status === 'recovered';
+
 export interface Patient {
   id: string;
   name: string;

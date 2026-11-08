@@ -4,17 +4,29 @@ import { redirect } from 'next/navigation';
 import { verifyPassword, setPassword } from '@/lib/password';
 import { createSession, deleteSession } from '@/lib/session';
 import { verifySession } from '@/lib/dal';
+import { clearFailures, lockoutMinutesLeft, recordFailure } from '@/lib/loginThrottle';
 
 export type LoginState = { error?: string } | undefined;
 
 export async function login(_prevState: LoginState, formData: FormData): Promise<LoginState> {
   const password = String(formData.get('password') || '');
 
-  const ok = await verifyPassword(password);
-  if (!ok) {
-    return { error: 'Wrong password, try again.' };
+  const locked = await lockoutMinutesLeft();
+  if (locked > 0) {
+    return { error: `Too many failed attempts. Try again in ${locked} min.` };
   }
 
+  const ok = await verifyPassword(password);
+  if (!ok) {
+    const lockout = await recordFailure();
+    return {
+      error: lockout
+        ? `Too many failed attempts. Try again in ${lockout} min.`
+        : 'Wrong password, try again.',
+    };
+  }
+
+  await clearFailures();
   await createSession();
   redirect('/');
 }

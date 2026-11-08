@@ -5,6 +5,7 @@ alter table public.sessions drop constraint if exists sessions_status_check;
 
 update public.sessions
 set status = case status
+  when 'programmata' then 'scheduled'
   when 'completata' then 'completed'
   when 'assente' then 'absent'
   when 'da_recuperare' then 'to_recover'

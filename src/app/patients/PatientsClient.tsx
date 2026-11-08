@@ -7,10 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Patient, Session } from "@/types/database";
+import { Patient, Session, isMissedSession, isWorkedSession } from "@/types/database";
 import { FileText, FileSpreadsheet, Search, UserPlus, Pencil, Trash2, Users } from "lucide-react";
 import { generatePatientExcel, generatePatientPDF } from "@/lib/exportUtils";
 import { createPatient, updatePatient, deletePatient } from "@/app/actions/patients";
+import { monthKey } from "@/lib/dates";
 
 export function PatientsClient({
   initialPatients,
@@ -24,10 +25,7 @@ export function PatientsClient({
   const [searchQuery, setSearchQuery] = useState("");
 
   // Month being exported (defaults to the current month, YYYY-MM)
-  const [exportMonth, setExportMonth] = useState(() => {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-  });
+  const [exportMonth, setExportMonth] = useState(() => monthKey(new Date()));
 
   // Modal state (new / edit)
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -158,11 +156,17 @@ export function PatientsClient({
           // Filter sessions by the month selected for export
           const exportSessions = patientSessions.filter(s => {
             if (!exportMonth) return true; // empty field exports everything
-            return s.date.startsWith(exportMonth);
+            // Compare in the instance time zone: s.date is a UTC timestamp, so a
+            // session just after midnight on the 1st would otherwise fall in the previous month.
+            return monthKey(s.date) === exportMonth;
           });
 
-          const totalHoursAllTime = (patientSessions.reduce((acc, s) => acc + s.duration_minutes, 0) / 60).toFixed(1);
-          const totalHoursExport = (exportSessions.reduce((acc, s) => acc + s.duration_minutes, 0) / 60).toFixed(1);
+          // Only sessions that took place count as hours; absences are listed apart.
+          const workedHours = (list: Session[]) =>
+            (list.filter(isWorkedSession).reduce((acc, s) => acc + s.duration_minutes, 0) / 60).toFixed(1);
+          const totalHoursAllTime = workedHours(patientSessions);
+          const totalHoursExport = workedHours(exportSessions);
+          const missedExport = exportSessions.filter(isMissedSession).length;
 
           return (
             <Card key={patient.id} className="overflow-hidden border-border/60 relative group hover:shadow-[0_4px_16px_-4px_rgba(124,16,52,0.18)]">
@@ -197,7 +201,7 @@ export function PatientsClient({
               </CardContent>
               <CardFooter className="p-4 pt-0 flex gap-2 border-t border-border/30 mt-3 pt-3 flex-col">
                 <div className="text-xs text-center w-full text-muted-foreground mb-1">
-                  Export {exportSessions.length} sessions ({totalHoursExport} h) for the selected month:
+                  Export {exportSessions.length} sessions ({totalHoursExport} h worked{missedExport > 0 ? `, ${missedExport} missed` : ""}) for the selected month:
                 </div>
                 <div className="flex gap-2 w-full">
                   <Button

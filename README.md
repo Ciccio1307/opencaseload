@@ -73,6 +73,7 @@ cp .env.example .env.local
 | `NEXT_PUBLIC_APP_DESCRIPTION` | — | Manifest and SEO description |
 | `NEXT_PUBLIC_THERAPIST_NAME` | — | Your name, shown in the greeting |
 | `NEXT_PUBLIC_LOCALE` | — | Date/time locale (default `en-GB`) |
+| `NEXT_PUBLIC_TIMEZONE` | — | IANA time zone of the practice, e.g. `Europe/Rome` (default `Europe/London`) |
 
 **3. Run it**
 
@@ -134,11 +135,11 @@ Tailwind CSS v4 · shadcn/ui · Supabase (PostgreSQL) · jsPDF · SheetJS.
 
 ## 🗺️ Where it is going
 
-- [ ] Explicit session status flow: `scheduled → completed | absent → recovered`
-- [ ] Exclude absences from exported totals
-- [ ] Timezone-safe month filtering
+- [x] Explicit session status flow: `scheduled → completed | absent → recovered`
+- [x] Exclude absences from exported totals
+- [x] Timezone-safe month filtering
 - [ ] Supabase Auth with a first-run setup wizard
-- [ ] Rate limiting on sign-in
+- [x] Rate limiting on sign-in
 - [ ] CSV export and replacement of the unmaintained `xlsx` dependency
 - [ ] Automated tests and CI
 - [ ] Docker Compose for self-hosting

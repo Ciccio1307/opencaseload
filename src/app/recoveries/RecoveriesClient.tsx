@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Patient, Session } from "@/types/database";
 import { Clock, UserCheck, CheckCircle2 } from "lucide-react";
 import { recoverSessions } from "@/app/actions/sessions";
-import { LOCALE } from "@/lib/branding";
+import { formatDate } from "@/lib/dates";
 
 export function RecoveriesClient({
   initialPatients,
@@ -94,7 +94,7 @@ export function RecoveriesClient({
                   <ul className="space-y-2">
                     {record.sessions.map(s => (
                       <li key={s.id} className="flex justify-between items-center text-sm p-2 bg-muted/50 rounded-md">
-                        <span className="font-medium text-foreground/80">{new Date(s.date).toLocaleDateString(LOCALE, { weekday: 'long', day: 'numeric', month: 'short' })}</span>
+                        <span className="font-medium text-foreground/80">{formatDate(s.date, { weekday: 'long', day: 'numeric', month: 'short' })}</span>
                         <span className="text-muted-foreground">{s.duration_minutes} min</span>
                       </li>
                     ))}
