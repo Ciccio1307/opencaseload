@@ -1,5 +1,8 @@
 -- Migrates session statuses from Italian to English.
 -- Run once on databases created with the previous schema.
+-- Wrapped in a transaction: if any step fails, nothing is changed.
+
+begin;
 
 alter table public.sessions drop constraint if exists sessions_status_check;
 
@@ -18,3 +21,5 @@ alter table public.sessions
   check (status in ('scheduled', 'completed', 'absent', 'to_recover', 'recovered'));
 
 alter table public.sessions alter column status set default 'scheduled';
+
+commit;
