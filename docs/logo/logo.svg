@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 360" width="1400" height="360" role="img" aria-label="OpenCaseload">
+  <rect width="1400" height="360" rx="56" fill="#0A0A0A"/>
+  <rect x="1" y="1" width="1398" height="358" rx="55" fill="none" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="2"/>
+  <g transform="translate(36 36) scale(0.5625)">
+    <path d="M383.5 244.8 A128 128 0 1 1 267.2 128.5" fill="none" stroke="#FFFFFF" stroke-width="56" stroke-linecap="round"/>
+    <circle cx="346.5" cy="165.5" r="40" fill="#F5333F"/>
+  </g>
+  <text x="352" y="222" font-family="Geist, Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="132" font-weight="700" letter-spacing="-6" textLength="940" lengthAdjust="spacingAndGlyphs">
+    <tspan fill="#FFFFFF" fill-opacity="0.55" font-weight="500">open</tspan><tspan fill="#FFFFFF">caseload</tspan><tspan fill="#F5333F">.</tspan>
+  </text>
+</svg>
