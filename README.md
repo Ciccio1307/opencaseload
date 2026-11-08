@@ -8,10 +8,19 @@ Open-source, self-hosted session tracking for therapists: patients, agenda,
 recovery hours and monthly reports. All in one place, on your phone.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-7c1034?style=for-the-badge)](LICENSE)
-[![CI](https://github.com/Ciccio1307/opencaseload/actions/workflows/ci.yml/badge.svg)](https://github.com/Ciccio1307/opencaseload/actions/workflows/ci.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/Ciccio1307/opencaseload/ci.yml?branch=main&style=for-the-badge&label=CI)](https://github.com/Ciccio1307/opencaseload/actions/workflows/ci.yml)
 [![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org)
 [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ecf8e?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-ff7a59?style=for-the-badge)](#-contributing)
+
+<br>
+
+<img src="docs/screenshots/dashboard.png" alt="Today's agenda" width="200">
+<img src="docs/screenshots/patients.png" alt="Patients and monthly reports" width="200">
+<img src="docs/screenshots/recoveries.png" alt="Hours to recover" width="200">
+<img src="docs/screenshots/login.png" alt="Sign-in" width="200">
+
+<sub>Screenshots use invented data.</sub>
 
 </div>
 
@@ -85,6 +94,10 @@ npm run dev
 Open <http://localhost:3000>, sign in with `APP_INITIAL_PASSWORD` and change it
 right away from **Settings**. Done.
 
+**Upgrading an existing database?** Run the files in
+[`supabase/migrations/`](supabase/migrations) you have not applied yet, in date
+order, from the Supabase SQL Editor. `schema.sql` is only for new projects.
+
 ## ☁️ Putting it online
 
 **Netlify** is the shortest path: import the repository, add the environment
@@ -127,7 +140,10 @@ src/
   components/          UI (shadcn/ui + app shell)
   lib/                 auth, session, Supabase, exports, branding
   types/               shared types
-supabase/schema.sql    database schema
+supabase/
+  schema.sql           database schema (new projects)
+  migrations/          changes for existing databases
+docs/screenshots/      README images (invented data)
 ```
 
 **Stack:** Next.js 16 (App Router, Server Actions) · React 19 · TypeScript ·
@@ -141,7 +157,9 @@ Tailwind CSS v4 · shadcn/ui · Supabase (PostgreSQL) · jsPDF · SheetJS.
 - [ ] Supabase Auth with a first-run setup wizard
 - [x] Rate limiting on sign-in
 - [ ] CSV export and replacement of the unmaintained `xlsx` dependency
-- [ ] Automated tests and CI
+- [x] CI: lint, type check and build on every push
+- [ ] Automated tests
+- [ ] Dark mode (the palette is ready in `globals.css`)
 - [ ] Docker Compose for self-hosting
 
 Priorities are not set in stone: if one matters to you, say so.
