@@ -9,7 +9,7 @@ if (!secretKey) {
 const encodedKey = new TextEncoder().encode(secretKey);
 
 const SESSION_COOKIE = 'session';
-const SESSION_DURATION_MS = 30 * 24 * 60 * 60 * 1000; // 30 giorni, come prima
+const SESSION_DURATION_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 type SessionPayload = {
   authorized: true;

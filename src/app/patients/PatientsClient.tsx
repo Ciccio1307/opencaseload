@@ -137,7 +137,7 @@ export function PatientsClient({
       {/* Patient list */}
       <div className="space-y-4">
         {filteredPatients.length === 0 && (
-          <Card className="border-dashed border-2 bg-muted/30">
+          <Card className="border-dashed border-2 bg-muted/30 py-0">
             <CardContent className="flex flex-col items-center justify-center py-12 text-muted-foreground">
               <Users size={48} className="mb-4 text-primary/40" />
               <p className="font-medium text-lg">
@@ -169,7 +169,7 @@ export function PatientsClient({
           const missedExport = exportSessions.filter(isMissedSession).length;
 
           return (
-            <Card key={patient.id} className="overflow-hidden border-border/60 relative group hover:shadow-[0_4px_16px_-4px_rgba(124,16,52,0.18)]">
+            <Card key={patient.id} className="overflow-hidden border-border/60 relative group py-0 gap-0 hover:shadow-[0_4px_16px_-4px_rgba(124,16,52,0.18)]">
               <CardContent className="p-4">
                 <div className="flex justify-between items-start pr-12">
                   <div>
@@ -190,18 +190,18 @@ export function PatientsClient({
 
                 {/* Edit / delete actions, top right */}
                 <div className="absolute top-3 right-2 flex flex-col gap-1">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary" onClick={() => handleOpenEdit(patient)}>
+                  <Button variant="ghost" size="icon" aria-label={`Edit ${patient.name}`} className="h-8 w-8 text-muted-foreground hover:text-primary" onClick={() => handleOpenEdit(patient)}>
                     <Pencil size={16} />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => handleDelete(patient.id)}>
+                  <Button variant="ghost" size="icon" aria-label={`Delete ${patient.name}`} className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => handleDelete(patient.id)}>
                     <Trash2 size={16} />
                   </Button>
                 </div>
 
               </CardContent>
-              <CardFooter className="p-4 pt-0 flex gap-2 border-t border-border/30 mt-3 pt-3 flex-col">
+              <CardFooter className="p-4 flex gap-2 border-t border-border/30 flex-col">
                 <div className="text-xs text-center w-full text-muted-foreground mb-1">
-                  Export {exportSessions.length} sessions ({totalHoursExport} h worked{missedExport > 0 ? `, ${missedExport} missed` : ""}) for the selected month:
+                  Export {exportSessions.length} {exportSessions.length === 1 ? "session" : "sessions"} ({totalHoursExport} h worked{missedExport > 0 ? `, ${missedExport} missed` : ""}) for the selected month:
                 </div>
                 <div className="flex gap-2 w-full">
                   <Button

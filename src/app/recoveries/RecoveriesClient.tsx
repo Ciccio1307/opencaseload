@@ -64,7 +64,7 @@ export function RecoveriesClient({
       </header>
 
       {patientsWithRecoveries.length === 0 ? (
-        <Card className="border-dashed border-2 bg-muted/30">
+        <Card className="border-dashed border-2 bg-muted/30 py-0">
           <CardContent className="flex flex-col items-center justify-center py-12 text-muted-foreground">
             <UserCheck size={48} className="mb-4 text-green-500/50" />
             <p className="font-medium text-lg">All caught up!</p>
@@ -77,10 +77,10 @@ export function RecoveriesClient({
             const totalHoursFormatted = (record.totalMinutes / 60).toFixed(1);
 
             return (
-              <Card key={record.patient.id} className="border-border/60">
+              <Card key={record.patient.id} className="border-border/60 py-0 gap-0">
                 <CardHeader className="p-4 pb-2">
                   <div className="flex justify-between items-center">
-                    <CardTitle className="text-lg">{record.patient.name}</CardTitle>
+                    <CardTitle className="text-lg font-bold">{record.patient.name}</CardTitle>
                     <Badge variant="destructive" className="bg-red-50 text-red-700 border-red-200 hover:bg-red-100 flex items-center gap-1 text-sm py-1">
                       <Clock size={14} />
                       {totalHoursFormatted} h
@@ -100,10 +100,10 @@ export function RecoveriesClient({
                     ))}
                   </ul>
                 </CardContent>
-                <CardFooter className="p-4 pt-0">
+                <CardFooter className="p-4 pt-2 border-t-0 bg-transparent">
                   <Button
                     onClick={() => handleRecoverSessions(record.sessions)}
-                    className="w-full bg-green-600 hover:bg-green-700 border-0 text-white shadow-md"
+                    className="w-full bg-bordeaux-gradient hover:opacity-90 border-0 text-white shadow-md"
                   >
                     <CheckCircle2 size={18} className="mr-2" />
                     Mark as recovered

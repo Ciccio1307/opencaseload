@@ -120,8 +120,8 @@ export function DashboardClient({
           </p>
         </div>
         <div className="flex gap-2">
-          <Link href="/settings">
-            <Button variant="outline" size="icon" className="rounded-full shadow-sm border-border/50 text-muted-foreground hover:text-primary">
+          <Link href="/settings" aria-label="Settings">
+            <Button variant="outline" size="icon" tabIndex={-1} className="rounded-full shadow-sm border-border/50 text-muted-foreground hover:text-primary">
               <Settings size={20} />
             </Button>
           </Link>
@@ -149,14 +149,14 @@ export function DashboardClient({
       {viewMode === 'oggi' ? (
         <>
           <div className="grid grid-cols-2 gap-4">
-            <Card className="border-primary/20 bg-primary/5">
+            <Card className="border-primary/20 bg-primary/5 py-0 gap-0">
               <CardHeader className="p-4 pb-2 flex flex-row items-center justify-between">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Patients today</CardTitle>
                 <Users size={16} className="text-primary" />
               </CardHeader>
               <CardContent className="p-4 pt-0"><p className="text-3xl font-bold">{todayPatients}</p></CardContent>
             </Card>
-            <Card className="border-primary/20 bg-primary/5">
+            <Card className="border-primary/20 bg-primary/5 py-0 gap-0">
               <CardHeader className="p-4 pb-2 flex flex-row items-center justify-between">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Hours worked</CardTitle>
                 <Clock size={16} className="text-primary" />
@@ -186,7 +186,7 @@ export function DashboardClient({
                         const patient = dbPatients.find(p => p.id === session.patient_id);
                         if (!patient) return null;
                         return (
-                          <Card key={session.id} className="overflow-hidden border-border/60 ml-2 relative hover:shadow-[0_4px_16px_-4px_rgba(124,16,52,0.18)]">
+                          <Card key={session.id} className="overflow-hidden border-border/60 ml-2 relative py-0 gap-0 hover:shadow-[0_4px_16px_-4px_rgba(124,16,52,0.18)]">
                             <CardContent className="p-0">
                               <div className="flex items-stretch">
                                 <div className={`w-2 shrink-0 ${session.status === 'absent' || session.status === 'to_recover' ? 'bg-red-400' : 'bg-primary/40'}`}></div>
@@ -199,20 +199,26 @@ export function DashboardClient({
                                   </div>
 
                                   {/* Delete button */}
-                                  <button onClick={() => handleDeleteSession(session.id)} className="absolute top-3 right-3 text-muted-foreground hover:text-destructive">
+                                  <button onClick={() => handleDeleteSession(session.id)} aria-label={`Delete session of ${patient.name}`} className="absolute top-3 right-3 text-muted-foreground hover:text-destructive">
                                     <Trash2 size={18} />
                                   </button>
                                   <div className="flex gap-2">
                                     <Button
                                       variant="outline"
-                                      className="flex-1 h-10 border-green-200 bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-800"
+                                      aria-pressed={session.status === 'completed'}
+                                      className={`flex-1 h-10 ${session.status === 'completed'
+                                        ? 'border-green-600 bg-green-600 text-white hover:bg-green-700 hover:text-white'
+                                        : 'border-green-200 bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-800'}`}
                                       onClick={() => handleStatusUpdate(session.id, 'completed')}
                                     >
                                       <Check size={18} className="mr-1" /> Present
                                     </Button>
                                     <Button
                                       variant="outline"
-                                      className="flex-1 h-10 border-red-200 bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-800"
+                                      aria-pressed={session.status === 'absent'}
+                                      className={`flex-1 h-10 ${session.status === 'absent'
+                                        ? 'border-red-600 bg-red-600 text-white hover:bg-red-700 hover:text-white'
+                                        : 'border-red-200 bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-800'}`}
                                       onClick={() => handleStatusUpdate(session.id, 'absent')}
                                     >
                                       <X size={18} className="mr-1" /> Absent
@@ -236,7 +242,7 @@ export function DashboardClient({
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
           <h2 className="text-lg font-semibold mb-2 text-bordeaux-gradient">Weekly summary</h2>
           {weekDays.map(([dayName, data], index) => (
-            <Card key={index} className="border-border/60">
+            <Card key={index} className="border-border/60 py-0 gap-0">
               <CardHeader className="p-4 pb-2 border-b border-border/50 bg-muted/20">
                 <div className="flex justify-between items-center">
                   <CardTitle className="text-base font-bold capitalize">{dayName}</CardTitle>
@@ -248,7 +254,7 @@ export function DashboardClient({
                 </div>
               </CardHeader>
               <CardContent className="p-4">
-                <p className="text-sm text-muted-foreground mb-2">Patients seen:</p>
+                <p className="text-sm text-muted-foreground mb-2">Patients:</p>
                 <div className="flex flex-wrap gap-2">
                   {Array.from(data.patients).map(patientId => {
                     const patient = dbPatients.find(p => p.id === patientId);

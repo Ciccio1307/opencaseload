@@ -7,7 +7,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -134,18 +134,18 @@
   }
 }
 
-/* Rispetta l'area sicura in basso (es. home indicator su iPhone) */
+/* Respect the bottom safe area (e.g. the iPhone home indicator) */
 @utility pb-safe {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Spazio riservato in fondo alla pagina per non finire sotto la bottom nav,
-   che a sua volta cresce dell'area sicura sui telefoni con home indicator. */
+/* Space reserved at the bottom of the page so content never ends up under the
+   bottom nav, which itself grows by the safe area on phones with a home indicator. */
 @utility pb-nav {
   padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
 }
 
-/* Custom Utilities per Bordeaux Sfumato */
+/* Bordeaux gradient utilities */
 @utility bg-bordeaux-gradient {
   background: linear-gradient(135deg, #7c1034 0%, #4a041b 100%);
   color: white;
