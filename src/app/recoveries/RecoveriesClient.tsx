@@ -81,7 +81,7 @@ export function RecoveriesClient({
                 <CardHeader className="p-4 pb-2">
                   <div className="flex justify-between items-center">
                     <CardTitle className="text-lg font-bold">{record.patient.name}</CardTitle>
-                    <Badge variant="destructive" className="bg-red-50 text-red-700 border-red-200 hover:bg-red-100 flex items-center gap-1 text-sm py-1">
+                    <Badge variant="destructive" className="bg-red-50 text-red-700 border-red-200 hover:bg-red-100 dark:bg-red-950/40 dark:text-red-400 dark:border-red-900 dark:hover:bg-red-950/70 flex items-center gap-1 text-sm py-1">
                       <Clock size={14} />
                       {totalHoursFormatted} h
                     </Badge>

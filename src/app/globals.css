@@ -2,7 +2,8 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
+/* Dark mode follows the system setting (phone or computer). */
+@custom-variant dark (@media (prefers-color-scheme: dark));
 
 @theme inline {
   --color-background: var(--background);
@@ -49,6 +50,7 @@
 }
 
 :root {
+  color-scheme: light;
   --background: oklch(0.98 0.015 40);
   --foreground: oklch(0.22 0.05 15);
   --card: oklch(1 0.004 40);
@@ -84,7 +86,9 @@
   --sidebar-ring: oklch(0.4 0.15 15);
 }
 
-.dark {
+@media (prefers-color-scheme: dark) {
+:root {
+  color-scheme: dark;
   --background: oklch(0.16 0.03 20);
   --foreground: oklch(0.9 0.03 15);
   --card: oklch(0.21 0.045 20);
@@ -116,6 +120,7 @@
   --sidebar-accent-foreground: oklch(0.9 0.03 15);
   --sidebar-border: oklch(0.25 0.05 15);
   --sidebar-ring: oklch(0.5 0.15 15);
+}
 }
 
 @layer base {
@@ -149,10 +154,19 @@
 @utility bg-bordeaux-gradient {
   background: linear-gradient(135deg, #7c1034 0%, #4a041b 100%);
   color: white;
+  @media (prefers-color-scheme: dark) {
+    /* A touch brighter so buttons still stand out on the dark background */
+    background: linear-gradient(135deg, #a01848 0%, #6e0c2e 100%);
+  }
 }
 
 @utility text-bordeaux-gradient {
   background: linear-gradient(135deg, #7c1034 0%, #4a041b 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  @media (prefers-color-scheme: dark) {
+    /* The light-mode gradient is almost black: use a light rose instead */
+    background: linear-gradient(135deg, #f2a7bd 0%, #d9668b 100%);
+    -webkit-background-clip: text;
+  }
 }

@@ -59,7 +59,7 @@ export default function SettingsPage() {
             </div>
 
             {state?.error && <p className="text-red-500 text-sm">{state.error}</p>}
-            {state?.success && <p className="text-green-600 text-sm font-medium">Password updated successfully!</p>}
+            {state?.success && <p className="text-green-600 dark:text-green-400 text-sm font-medium">Password updated successfully!</p>}
 
             <Button type="submit" disabled={pending} className="w-full bg-bordeaux-gradient hover:opacity-90 border-0 text-white">
               <Save size={18} className="mr-2" />
@@ -70,7 +70,7 @@ export default function SettingsPage() {
       </Card>
 
       <form action={logout}>
-        <Button type="submit" variant="outline" className="w-full border-red-200 text-red-600 hover:bg-red-50">
+        <Button type="submit" variant="outline" className="w-full border-red-200 text-red-600 hover:bg-red-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950/40">
           <LogOut size={18} className="mr-2" />
           Sign out
         </Button>

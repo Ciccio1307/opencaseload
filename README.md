@@ -18,9 +18,9 @@ recovery hours and monthly reports. All in one place, on your phone.
 <img src="docs/screenshots/dashboard.png" alt="Today's agenda" width="200">
 <img src="docs/screenshots/patients.png" alt="Patients and monthly reports" width="200">
 <img src="docs/screenshots/recoveries.png" alt="Hours to recover" width="200">
-<img src="docs/screenshots/login.png" alt="Sign-in" width="200">
+<img src="docs/screenshots/dashboard-dark.png" alt="Dark mode" width="200">
 
-<sub>Screenshots use invented data.</sub>
+<sub>Screenshots use invented data. Dark mode follows the system setting.</sub>
 
 </div>
 
@@ -159,7 +159,7 @@ Tailwind CSS v4 · shadcn/ui · Supabase (PostgreSQL) · jsPDF · SheetJS.
 - [ ] CSV export and replacement of the unmaintained `xlsx` dependency
 - [x] CI: lint, type check and build on every push
 - [ ] Automated tests
-- [ ] Dark mode (the palette is ready in `globals.css`)
+- [x] Dark mode, following the system setting
 - [ ] Docker Compose for self-hosting
 
 Priorities are not set in stone: if one matters to you, say so.

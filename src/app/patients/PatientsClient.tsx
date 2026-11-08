@@ -206,7 +206,7 @@ export function PatientsClient({
                 <div className="flex gap-2 w-full">
                   <Button
                     variant="outline"
-                    className="flex-1 border-primary/20 text-primary hover:bg-primary/10"
+                    className="flex-1 border-primary/20 text-primary hover:bg-primary/10 dark:border-primary/40 dark:hover:bg-primary/15"
                     onClick={() => generatePatientPDF(patient, exportSessions)}
                   >
                     <FileText size={18} className="mr-2" /> PDF

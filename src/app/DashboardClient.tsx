@@ -179,7 +179,7 @@ export function DashboardClient({
                     <div className="-mt-1.5 mb-3 flex items-center gap-2">
                       <span className="font-bold text-lg">{startTimeStr} - {endTimeStr}</span>
                       <Badge variant="secondary" className="bg-primary/10 text-primary">{slot.duration} min</Badge>
-                      {slot.sessions.length > 1 && <Badge variant="outline" className="border-orange-200 bg-orange-50 text-orange-700">Multiple ({slot.sessions.length})</Badge>}
+                      {slot.sessions.length > 1 && <Badge variant="outline" className="border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-900 dark:bg-orange-950/40 dark:text-orange-300">Multiple ({slot.sessions.length})</Badge>}
                     </div>
                     <div className="space-y-3">
                       {slot.sessions.map(session => {
@@ -207,8 +207,8 @@ export function DashboardClient({
                                       variant="outline"
                                       aria-pressed={session.status === 'completed'}
                                       className={`flex-1 h-10 ${session.status === 'completed'
-                                        ? 'border-green-600 bg-green-600 text-white hover:bg-green-700 hover:text-white'
-                                        : 'border-green-200 bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-800'}`}
+                                        ? 'border-green-600 bg-green-600 text-white hover:bg-green-700 hover:text-white dark:border-green-600 dark:bg-green-600 dark:text-white dark:hover:bg-green-700'
+                                        : 'border-green-200 bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-800 dark:border-green-900 dark:bg-green-950/40 dark:text-green-400 dark:hover:bg-green-950/70 dark:hover:text-green-300'}`}
                                       onClick={() => handleStatusUpdate(session.id, 'completed')}
                                     >
                                       <Check size={18} className="mr-1" /> Present
@@ -217,8 +217,8 @@ export function DashboardClient({
                                       variant="outline"
                                       aria-pressed={session.status === 'absent'}
                                       className={`flex-1 h-10 ${session.status === 'absent'
-                                        ? 'border-red-600 bg-red-600 text-white hover:bg-red-700 hover:text-white'
-                                        : 'border-red-200 bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-800'}`}
+                                        ? 'border-red-600 bg-red-600 text-white hover:bg-red-700 hover:text-white dark:border-red-600 dark:bg-red-600 dark:text-white dark:hover:bg-red-700'
+                                        : 'border-red-200 bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-800 dark:border-red-900 dark:bg-red-950/40 dark:text-red-400 dark:hover:bg-red-950/70 dark:hover:text-red-300'}`}
                                       onClick={() => handleStatusUpdate(session.id, 'absent')}
                                     >
                                       <X size={18} className="mr-1" /> Absent
