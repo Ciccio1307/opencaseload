@@ -1,18 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Session, Patient, STATUS_LABELS, isWorkedSession } from "@/types/database";
+import { Session, Patient, STATUS_LABELS, needsRecovery } from "@/types/database";
 import Link from "next/link";
 import { Plus, Check, X, Clock, Settings, Users, CalendarDays, CalendarSync, Trash2 } from "lucide-react";
 import { createTherapySession, updateSessionStatus, deleteTherapySession } from "@/app/actions/sessions";
 import { greeting } from "@/lib/branding";
 import { dayKey, formatDate, formatTime, weekDayKeys, zonedParts, zonedToUtcISO } from "@/lib/dates";
+import { daySchedule, formatHours, indexById, weekSummary } from "@/lib/caseload";
 
 export function DashboardClient({
   initialPatients,
@@ -21,9 +22,10 @@ export function DashboardClient({
   initialPatients: Patient[];
   initialSessions: Session[];
 }) {
-  const [viewMode, setViewMode] = useState<'oggi' | 'settimana'>('oggi');
+  const [viewMode, setViewMode] = useState<'today' | 'week'>('today');
   const [dbSessions, setDbSessions] = useState<Session[]>(initialSessions);
   const dbPatients = initialPatients;
+  const patientsById = useMemo(() => indexById(initialPatients), [initialPatients]);
 
   // Modal state
   const [isSessionModalOpen, setIsSessionModalOpen] = useState(false);
@@ -47,67 +49,46 @@ export function DashboardClient({
     });
 
     if (error) {
-      alert("Database error (session): " + error);
+      alert("Could not save the session: " + error);
       return;
     }
 
     if (data) {
-      setDbSessions([...dbSessions, data]);
+      setDbSessions(prev => [...prev, data]);
       setIsSessionModalOpen(false);
       setSessionForm(prev => ({ ...prev, patient_id: "", notes: "" }));
     }
   };
 
   const handleStatusUpdate = async (sessionId: string, newStatus: 'completed' | 'absent') => {
-    const { data } = await updateSessionStatus(sessionId, newStatus);
+    const { data, error } = await updateSessionStatus(sessionId, newStatus);
+    if (error) {
+      alert("Could not update the session: " + error);
+      return;
+    }
     if (data) {
-      setDbSessions(dbSessions.map(s => s.id === sessionId ? data : s));
+      setDbSessions(prev => prev.map(s => s.id === sessionId ? data : s));
     }
   };
 
   const handleDeleteSession = async (sessionId: string) => {
     if (window.confirm("Delete this session?")) {
-      await deleteTherapySession(sessionId);
-      setDbSessions(dbSessions.filter(s => s.id !== sessionId));
+      const { error } = await deleteTherapySession(sessionId);
+      if (error) {
+        alert("Could not delete the session: " + error);
+        return;
+      }
+      setDbSessions(prev => prev.filter(s => s.id !== sessionId));
     }
   };
 
-  // TODAY
   // All day/week grouping happens in the instance time zone (see lib/dates.ts)
   const today = new Date();
   const todayKey = dayKey(today);
-  const todaySessions = dbSessions.filter(s => dayKey(s.date) === todayKey);
-
-  // CURRENT WEEK (Monday to Sunday)
-  const thisWeek = new Set(weekDayKeys(today));
-  const weekSessions = dbSessions.filter(s => thisWeek.has(dayKey(s.date)));
-
-  const groupedToday = todaySessions.reduce((acc, session) => {
-    const sessionDate = new Date(session.date);
-    const timeKey = formatTime(sessionDate) + '_' + session.duration_minutes;
-    if (!acc[timeKey]) acc[timeKey] = { date: sessionDate, duration: session.duration_minutes, sessions: [] };
-    acc[timeKey].sessions.push(session);
-    return acc;
-  }, {} as Record<string, { date: Date, duration: number, sessions: Session[] }>);
-
-  const timeSlots = Object.values(groupedToday).sort((a, b) => a.date.getTime() - b.date.getTime());
-  // Only slots where at least one session actually took place count as worked
-  // (a group slot counts once, however many patients attended).
-  const todayMinutesWorked = timeSlots
-    .filter(slot => slot.sessions.some(isWorkedSession))
-    .reduce((acc, slot) => acc + slot.duration, 0);
-  const todayPatients = todaySessions.length;
-
-  const groupedWeek = weekSessions.reduce((acc, session) => {
-    const d = new Date(session.date);
-    const dayLabel = formatDate(d, { weekday: 'short', day: 'numeric', month: 'short' });
-    if (!acc[dayLabel]) acc[dayLabel] = { date: d, patients: new Set(), totalMinutes: 0 };
-    acc[dayLabel].patients.add(session.patient_id);
-    acc[dayLabel].totalMinutes += session.duration_minutes;
-    return acc;
-  }, {} as Record<string, { date: Date, patients: Set<string>, totalMinutes: number }>);
-
-  const weekDays = Object.entries(groupedWeek).sort((a, b) => a[1].date.getTime() - b[1].date.getTime());
+  // One linear pass each over the sessions (see lib/caseload.ts).
+  const { slots: timeSlots, sessionCount: todayPatients, minutesWorked: todayMinutesWorked } =
+    daySchedule(dbSessions, todayKey);
+  const weekDays = weekSummary(dbSessions, weekDayKeys(todayKey));
 
   return (
     <div className="p-4 space-y-6 pb-8">
@@ -138,15 +119,15 @@ export function DashboardClient({
 
       {/* Toggle View */}
       <div className="flex p-1 bg-muted/50 rounded-xl">
-        <button onClick={() => setViewMode('oggi')} className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-2 ${viewMode === 'oggi' ? 'bg-background shadow-sm text-primary' : 'text-muted-foreground'}`}>
+        <button onClick={() => setViewMode('today')} className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-2 ${viewMode === 'today' ? 'bg-background shadow-sm text-primary' : 'text-muted-foreground'}`}>
           <CalendarSync size={16} /> Today
         </button>
-        <button onClick={() => setViewMode('settimana')} className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-2 ${viewMode === 'settimana' ? 'bg-background shadow-sm text-primary' : 'text-muted-foreground'}`}>
+        <button onClick={() => setViewMode('week')} className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-2 ${viewMode === 'week' ? 'bg-background shadow-sm text-primary' : 'text-muted-foreground'}`}>
           <CalendarDays size={16} /> Week
         </button>
       </div>
 
-      {viewMode === 'oggi' ? (
+      {viewMode === 'today' ? (
         <>
           <div className="grid grid-cols-2 gap-4">
             <Card className="border-primary/20 bg-primary/5 py-0 gap-0">
@@ -161,20 +142,20 @@ export function DashboardClient({
                 <CardTitle className="text-sm font-medium text-muted-foreground">Hours worked</CardTitle>
                 <Clock size={16} className="text-primary" />
               </CardHeader>
-              <CardContent className="p-4 pt-0"><p className="text-3xl font-bold">{(todayMinutesWorked / 60).toFixed(1)}h</p></CardContent>
+              <CardContent className="p-4 pt-0"><p className="text-3xl font-bold">{formatHours(todayMinutesWorked)}h</p></CardContent>
             </Card>
           </div>
 
           <div>
             <h2 className="text-lg font-semibold mb-4 text-bordeaux-gradient">Appointments</h2>
             <div className="space-y-6">
-              {timeSlots.map((slot, index) => {
-                const startTimeStr = formatTime(slot.date);
-                const endDate = new Date(slot.date.getTime() + slot.duration * 60000);
+              {timeSlots.map((slot) => {
+                const startTimeStr = formatTime(slot.start);
+                const endDate = new Date(slot.start.getTime() + slot.duration * 60000);
                 const endTimeStr = formatTime(endDate);
 
                 return (
-                  <div key={index} className="relative pl-4 border-l-2 border-primary/30 space-y-3">
+                  <div key={`${slot.start.getTime()}_${slot.duration}`} className="relative pl-4 border-l-2 border-primary/30 space-y-3">
                     <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-background border-2 border-primary shadow-sm" />
                     <div className="-mt-1.5 mb-3 flex items-center gap-2">
                       <span className="font-bold text-lg">{startTimeStr} - {endTimeStr}</span>
@@ -183,13 +164,13 @@ export function DashboardClient({
                     </div>
                     <div className="space-y-3">
                       {slot.sessions.map(session => {
-                        const patient = dbPatients.find(p => p.id === session.patient_id);
+                        const patient = patientsById.get(session.patient_id);
                         if (!patient) return null;
                         return (
                           <Card key={session.id} className="overflow-hidden border-border/60 ml-2 relative py-0 gap-0 hover:shadow-[0_4px_16px_-4px_rgba(124,16,52,0.18)]">
                             <CardContent className="p-0">
                               <div className="flex items-stretch">
-                                <div className={`w-2 shrink-0 ${session.status === 'absent' || session.status === 'to_recover' ? 'bg-red-400' : 'bg-primary/40'}`}></div>
+                                <div className={`w-2 shrink-0 ${needsRecovery(session) ? 'bg-red-400' : 'bg-primary/40'}`}></div>
                                 <div className="p-4 flex-1">
                                   <div className="flex justify-between items-center mb-3 pr-8">
                                     <p className="font-bold text-base leading-none">{patient.name}</p>
@@ -241,14 +222,16 @@ export function DashboardClient({
         // WEEK VIEW
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
           <h2 className="text-lg font-semibold mb-2 text-bordeaux-gradient">Weekly summary</h2>
-          {weekDays.map(([dayName, data], index) => (
-            <Card key={index} className="border-border/60 py-0 gap-0">
+          {weekDays.map((data) => (
+            <Card key={data.day} className="border-border/60 py-0 gap-0">
               <CardHeader className="p-4 pb-2 border-b border-border/50 bg-muted/20">
                 <div className="flex justify-between items-center">
-                  <CardTitle className="text-base font-bold capitalize">{dayName}</CardTitle>
+                  <CardTitle className="text-base font-bold capitalize">
+                    {formatDate(data.date, { weekday: 'short', day: 'numeric', month: 'short' })}
+                  </CardTitle>
                   <div className="flex gap-2">
                     <Badge variant="outline" className="bg-background">
-                      <Users size={12} className="mr-1" /> {data.patients.size}
+                      <Users size={12} className="mr-1" /> {data.patientIds.size}
                     </Badge>
                   </div>
                 </div>
@@ -256,8 +239,8 @@ export function DashboardClient({
               <CardContent className="p-4">
                 <p className="text-sm text-muted-foreground mb-2">Patients:</p>
                 <div className="flex flex-wrap gap-2">
-                  {Array.from(data.patients).map(patientId => {
-                    const patient = dbPatients.find(p => p.id === patientId);
+                  {Array.from(data.patientIds).map(patientId => {
+                    const patient = patientsById.get(patientId);
                     return patient ? (
                       <Badge key={patientId} variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20">
                         {patient.name}

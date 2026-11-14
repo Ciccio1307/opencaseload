@@ -21,18 +21,30 @@ const partsFormatter = new Intl.DateTimeFormat('en-US', {
   hourCycle: 'h23',
 });
 
+export type ZonedParts = {
+  year: number;
+  month: number;
+  day: number;
+  hour: number;
+  minute: number;
+  second: number;
+};
+
 /** Calendar fields of an instant, as seen in the instance time zone. */
-export function zonedParts(date: Date | string) {
+export function zonedParts(date: Date | string): ZonedParts {
   const d = typeof date === 'string' ? new Date(date) : date;
-  const get = (type: string) =>
-    Number(partsFormatter.formatToParts(d).find(p => p.type === type)?.value);
+  // One formatToParts call (it is the expensive part), not one per field.
+  const parts: Record<string, number> = {};
+  for (const p of partsFormatter.formatToParts(d)) {
+    if (p.type !== 'literal') parts[p.type] = Number(p.value);
+  }
   return {
-    year: get('year'),
-    month: get('month'),
-    day: get('day'),
-    hour: get('hour'),
-    minute: get('minute'),
-    second: get('second'),
+    year: parts.year,
+    month: parts.month,
+    day: parts.day,
+    hour: parts.hour,
+    minute: parts.minute,
+    second: parts.second,
   };
 }
 
@@ -48,9 +60,16 @@ export function monthKey(date: Date | string) {
   return `${p.year}-${pad(p.month)}`;
 }
 
-/** The seven "YYYY-MM-DD" keys (Monday to Sunday) of the week containing `date`. */
+const DAY_KEY_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
+
+/**
+ * The seven "YYYY-MM-DD" keys (Monday to Sunday) of the week containing
+ * `date`: an instant, or a day key itself. A bare "YYYY-MM-DD" is read as a
+ * calendar day, not as UTC midnight (which is the previous day west of UTC).
+ */
 export function weekDayKeys(date: Date | string) {
-  const p = zonedParts(date);
+  const m = typeof date === 'string' ? DAY_KEY_RE.exec(date) : null;
+  const p = m ? { year: +m[1], month: +m[2], day: +m[3] } : zonedParts(date);
   // Plain calendar arithmetic on a UTC date: no time zone involved any more.
   const base = new Date(Date.UTC(p.year, p.month - 1, p.day));
   const mondayOffset = (base.getUTCDay() + 6) % 7;
@@ -82,10 +101,12 @@ export function zonedToUtcISO(date: string, time: string) {
   return new Date(utc).toISOString();
 }
 
+/** Localised date in the instance zone and locale (LOCALE, e.g. "08/11/2026"). */
 export function formatDate(date: Date | string, options: Intl.DateTimeFormatOptions = {}) {
   return new Date(date).toLocaleDateString(LOCALE, { ...options, timeZone: TIMEZONE });
 }
 
+/** Localised "HH:MM" in the instance zone and locale. */
 export function formatTime(date: Date | string) {
   return new Date(date).toLocaleTimeString(LOCALE, {
     hour: '2-digit',

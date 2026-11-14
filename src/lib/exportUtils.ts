@@ -1,20 +1,21 @@
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { Patient, Session, STATUS_LABELS, isMissedSession, isWorkedSession } from '@/types/database';
+import { Patient, Session, STATUS_LABELS, isMissedSession } from '@/types/database';
+import { formatHours, sumMinutes, workedMinutes } from '@/lib/caseload';
 import { APP_NAME } from '@/lib/branding';
 import { formatDate, formatTime } from '@/lib/dates';
+import { reportFileName } from '@/lib/validation';
 
 /** Hours worked (sessions that took place) and missed sessions, kept apart. */
-function summarise(sessions: Session[]) {
-  const workedMinutes = sessions.filter(isWorkedSession).reduce((acc, s) => acc + s.duration_minutes, 0);
+export function summarise(sessions: Session[]) {
+  const worked = workedMinutes(sessions);
   const missed = sessions.filter(isMissedSession);
-  const missedMinutes = missed.reduce((acc, s) => acc + s.duration_minutes, 0);
   return {
-    workedMinutes,
-    workedHours: (workedMinutes / 60).toFixed(1),
+    workedMinutes: worked,
+    workedHours: formatHours(worked),
     missedCount: missed.length,
-    missedMinutes,
+    missedMinutes: sumMinutes(missed),
   };
 }
 
@@ -52,7 +53,7 @@ export function generatePatientExcel(patient: Patient, sessions: Session[]) {
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Hours');
 
-  XLSX.writeFile(workbook, `Report_${patient.name.replace(/\s+/g, '_')}.xlsx`);
+  XLSX.writeFile(workbook, reportFileName(patient.name, 'xlsx'));
 }
 
 export function generatePatientPDF(patient: Patient, sessions: Session[]) {
@@ -103,5 +104,5 @@ export function generatePatientPDF(patient: Patient, sessions: Session[]) {
     footStyles: { fillColor: [240, 240, 240], textColor: [0,0,0], fontStyle: 'bold' },
   });
 
-  doc.save(`Report_${patient.name.replace(/\s+/g, '_')}.pdf`);
+  doc.save(reportFileName(patient.name, 'pdf'));
 }

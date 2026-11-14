@@ -1,17 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Patient, Session, isMissedSession, isWorkedSession } from "@/types/database";
+import { Patient, Session } from "@/types/database";
 import { FileText, FileSpreadsheet, Search, UserPlus, Pencil, Trash2, Users } from "lucide-react";
-import { generatePatientExcel, generatePatientPDF } from "@/lib/exportUtils";
 import { createPatient, updatePatient, deletePatient } from "@/app/actions/patients";
 import { monthKey } from "@/lib/dates";
+import { groupByPatient, matchesSearch, patientStats } from "@/lib/caseload";
+
+/** Same order as the server query (alphabetical), kept after edits. */
+const sortByName = (list: Patient[]) => [...list].sort((a, b) => a.name.localeCompare(b.name));
+
+/**
+ * jsPDF and SheetJS weigh several hundred KB: load them only when a report is
+ * actually requested instead of with the page.
+ */
+async function exportReport(format: 'pdf' | 'xlsx', patient: Patient, sessions: Session[]) {
+  const { generatePatientExcel, generatePatientPDF } = await import("@/lib/exportUtils");
+  if (format === 'pdf') generatePatientPDF(patient, sessions);
+  else generatePatientExcel(patient, sessions);
+}
 
 export function PatientsClient({
   initialPatients,
@@ -21,7 +34,8 @@ export function PatientsClient({
   initialSessions: Session[];
 }) {
   const [patients, setPatients] = useState<Patient[]>(initialPatients);
-  const sessions = initialSessions;
+  // Built once: each card then reads its own sessions in O(1).
+  const sessionsByPatient = useMemo(() => groupByPatient(initialSessions), [initialSessions]);
   const [searchQuery, setSearchQuery] = useState("");
 
   // Month being exported (defaults to the current month, YYYY-MM)
@@ -32,7 +46,7 @@ export function PatientsClient({
   const [editingPatient, setEditingPatient] = useState<Patient | null>(null);
   const [formData, setFormData] = useState({ name: "", phone: "", notes: "" });
 
-  const filteredPatients = patients.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredPatients = patients.filter(p => matchesSearch(p.name, searchQuery));
 
   const handleOpenAdd = () => {
     setEditingPatient(null);
@@ -50,10 +64,10 @@ export function PatientsClient({
     if (window.confirm("Delete this patient? All their data will be lost.")) {
       const { error } = await deletePatient(id);
       if (error) {
-        alert("Database error: " + error);
+        alert("Could not save: " + error);
         return;
       }
-      setPatients(patients.filter(p => p.id !== id));
+      setPatients(prev => prev.filter(p => p.id !== id));
     }
   };
 
@@ -70,23 +84,23 @@ export function PatientsClient({
       const { data, error } = await updatePatient(editingPatient.id, input);
 
       if (error) {
-        alert("Database error: " + error);
+        alert("Could not save: " + error);
         return;
       }
 
       if (data) {
-        setPatients(patients.map(p => p.id === editingPatient.id ? data : p));
+        setPatients(prev => sortByName(prev.map(p => p.id === editingPatient.id ? data : p)));
       }
     } else {
       const { data, error } = await createPatient(input);
 
       if (error) {
-        alert("Database error: " + error);
+        alert("Could not save: " + error);
         return;
       }
 
       if (data) {
-        setPatients([data, ...patients]);
+        setPatients(prev => sortByName([...prev, data]));
       }
     }
     setIsDialogOpen(false);
@@ -151,22 +165,14 @@ export function PatientsClient({
         )}
 
         {filteredPatients.map((patient) => {
-          const patientSessions = sessions.filter(s => s.patient_id === patient.id);
-
-          // Filter sessions by the month selected for export
-          const exportSessions = patientSessions.filter(s => {
-            if (!exportMonth) return true; // empty field exports everything
-            // Compare in the instance time zone: s.date is a UTC timestamp, so a
-            // session just after midnight on the 1st would otherwise fall in the previous month.
-            return monthKey(s.date) === exportMonth;
-          });
-
-          // Only sessions that took place count as hours; absences are listed apart.
-          const workedHours = (list: Session[]) =>
-            (list.filter(isWorkedSession).reduce((acc, s) => acc + s.duration_minutes, 0) / 60).toFixed(1);
-          const totalHoursAllTime = workedHours(patientSessions);
-          const totalHoursExport = workedHours(exportSessions);
-          const missedExport = exportSessions.filter(isMissedSession).length;
+          // Empty month field = everything. Months are compared in the instance
+          // time zone (see lib/dates.ts), so late-evening sessions land right.
+          const {
+            totalHours: totalHoursAllTime,
+            monthSessions: exportSessions,
+            monthHours: totalHoursExport,
+            monthMissed: missedExport,
+          } = patientStats(sessionsByPatient.get(patient.id) ?? [], exportMonth);
 
           return (
             <Card key={patient.id} className="overflow-hidden border-border/60 relative group py-0 gap-0 hover:shadow-[0_4px_16px_-4px_rgba(124,16,52,0.18)]">
@@ -207,14 +213,14 @@ export function PatientsClient({
                   <Button
                     variant="outline"
                     className="flex-1 border-primary/20 text-primary hover:bg-primary/10 dark:border-primary/40 dark:hover:bg-primary/15"
-                    onClick={() => generatePatientPDF(patient, exportSessions)}
+                    onClick={() => exportReport('pdf', patient, exportSessions)}
                   >
                     <FileText size={18} className="mr-2" /> PDF
                   </Button>
                   <Button
                     variant="outline"
                     className="flex-1 border-green-200 text-green-700 hover:bg-green-50 dark:border-green-900 dark:text-green-400 dark:hover:bg-green-950/30"
-                    onClick={() => generatePatientExcel(patient, exportSessions)}
+                    onClick={() => exportReport('xlsx', patient, exportSessions)}
                   >
                     <FileSpreadsheet size={18} className="mr-2" /> Excel
                   </Button>

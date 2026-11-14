@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -7,6 +7,7 @@ import { Patient, Session } from "@/types/database";
 import { Clock, UserCheck, CheckCircle2 } from "lucide-react";
 import { recoverSessions } from "@/app/actions/sessions";
 import { formatDate } from "@/lib/dates";
+import { formatHours, indexById, pendingRecoveries } from "@/lib/caseload";
 
 export function RecoveriesClient({
   initialPatients,
@@ -16,7 +17,7 @@ export function RecoveriesClient({
   initialSessions: Session[];
 }) {
   const [dbSessions, setDbSessions] = useState<Session[]>(initialSessions);
-  const dbPatients = initialPatients;
+  const patientsById = useMemo(() => indexById(initialPatients), [initialPatients]);
 
   const handleRecoverSessions = async (sessionsToUpdate: Session[]) => {
     if (!window.confirm("Mark these hours as recovered? They will disappear from this list.")) return;
@@ -25,34 +26,16 @@ export function RecoveriesClient({
 
     const { error } = await recoverSessions(ids);
     if (error) {
-      alert("Database error: " + error);
+      alert("Could not save: " + error);
       return;
     }
 
-    setDbSessions(dbSessions.map(s => ids.includes(s.id) ? { ...s, status: 'recovered' } : s));
+    const recovered = new Set(ids);
+    setDbSessions(prev => prev.map(s => recovered.has(s.id) ? { ...s, status: 'recovered' } : s));
   };
 
-  // Sessions that still need to be recovered
-  const sessionsToRecover = dbSessions.filter(s => s.status === 'absent' || s.status === 'to_recover');
-
-  // Group by patient to get the total outstanding hours
-  const recoveriesByPatient = sessionsToRecover.reduce((acc, session) => {
-    if (!acc[session.patient_id]) {
-      const patient = dbPatients.find(p => p.id === session.patient_id);
-      if (!patient) return acc;
-
-      acc[session.patient_id] = {
-        patient: patient,
-        totalMinutes: 0,
-        sessions: []
-      };
-    }
-    acc[session.patient_id].totalMinutes += session.duration_minutes;
-    acc[session.patient_id].sessions.push(session);
-    return acc;
-  }, {} as Record<string, { patient: Patient, totalMinutes: number, sessions: Session[] }>);
-
-  const patientsWithRecoveries = Object.values(recoveriesByPatient);
+  // Patients with missed sessions still to recover, and the minutes owed
+  const patientsWithRecoveries = pendingRecoveries(dbSessions, patientsById);
 
   return (
     <div className="p-4 space-y-6 pb-8">
@@ -74,7 +57,7 @@ export function RecoveriesClient({
       ) : (
         <div className="space-y-4">
           {patientsWithRecoveries.map((record) => {
-            const totalHoursFormatted = (record.totalMinutes / 60).toFixed(1);
+            const totalHoursFormatted = formatHours(record.totalMinutes);
 
             return (
               <Card key={record.patient.id} className="border-border/60 py-0 gap-0">

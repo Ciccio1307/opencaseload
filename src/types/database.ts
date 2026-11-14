@@ -15,6 +15,10 @@ export const isWorkedSession = (s: Pick<Session, 'status'>) => s.status === 'com
 export const isMissedSession = (s: Pick<Session, 'status'>) =>
   s.status === 'absent' || s.status === 'to_recover' || s.status === 'recovered';
 
+/** A missed session that still has to be recovered. */
+export const needsRecovery = (s: Pick<Session, 'status'>) =>
+  s.status === 'absent' || s.status === 'to_recover';
+
 export interface Patient {
   id: string;
   name: string;
