@@ -1,23 +1,24 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { getSessionFromToken } from '@/lib/session'
+import { SESSION_COOKIE_NAME, getSessionFromToken } from '@/lib/session'
 
+/**
+ * Optimistic gate: visitors without a validly signed session cookie are sent
+ * to /login. The real authorisation (signature + session epoch) is repeated
+ * server-side in every page and Server Action, see src/lib/dal.ts.
+ *
+ * Signed-in visitors are deliberately NOT bounced away from /login: a token
+ * whose epoch was revoked still has a valid signature, and dal.ts sends it to
+ * /login, so bouncing it back to / would loop forever.
+ */
 export async function proxy(request: NextRequest) {
-  const sessionCookie = request.cookies.get('session')
-  const isLoginPage = request.nextUrl.pathname.startsWith('/login')
-
-  // Optimistic check: validate the session cookie signature.
-  // The real authorisation is repeated server-side in every Server Action (see src/lib/dal.ts).
-  const isAuthorized = await getSessionFromToken(sessionCookie?.value)
-
-  // If the user is not authenticated and is not on the login page, redirect to /login
-  if (!isAuthorized && !isLoginPage) {
-    return NextResponse.redirect(new URL('/login', request.url))
+  if (request.nextUrl.pathname.startsWith('/login')) {
+    return NextResponse.next()
   }
 
-  // If the user is authenticated and tries to open /login, redirect to the home page
-  if (isAuthorized && isLoginPage) {
-    return NextResponse.redirect(new URL('/', request.url))
+  const token = request.cookies.get(SESSION_COOKIE_NAME)?.value
+  if (!(await getSessionFromToken(token))) {
+    return NextResponse.redirect(new URL('/login', request.url))
   }
 
   return NextResponse.next()

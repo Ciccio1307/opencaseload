@@ -3,10 +3,11 @@
 import { useActionState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Settings, Save, LogOut } from "lucide-react";
-import { changePassword, logout } from "@/app/actions/auth";
+import { Settings, Save, LogOut, ShieldOff } from "lucide-react";
+import { changePassword, logout, logoutEverywhere } from "@/app/actions/auth";
+import { MIN_PASSWORD_LENGTH } from "@/lib/validation";
 
-export default function SettingsPage() {
+export function SettingsClient() {
   const [state, formAction, pending] = useActionState(changePassword, undefined);
 
   return (
@@ -25,7 +26,7 @@ export default function SettingsPage() {
             Change password
           </CardTitle>
           <CardDescription>
-            Update the password used to sign in.
+            Update the password used to sign in. Other devices are signed out.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -35,6 +36,7 @@ export default function SettingsPage() {
               <input
                 type="password"
                 name="currentPassword"
+                autoComplete="current-password"
                 className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
                 required
               />
@@ -44,6 +46,8 @@ export default function SettingsPage() {
               <input
                 type="password"
                 name="newPassword"
+                autoComplete="new-password"
+                minLength={MIN_PASSWORD_LENGTH}
                 className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
                 required
               />
@@ -53,6 +57,8 @@ export default function SettingsPage() {
               <input
                 type="password"
                 name="confirmPassword"
+                autoComplete="new-password"
+                minLength={MIN_PASSWORD_LENGTH}
                 className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
                 required
               />
@@ -73,6 +79,13 @@ export default function SettingsPage() {
         <Button type="submit" variant="outline" className="w-full border-red-200 text-red-600 hover:bg-red-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950/40">
           <LogOut size={18} className="mr-2" />
           Sign out
+        </Button>
+      </form>
+
+      <form action={logoutEverywhere}>
+        <Button type="submit" variant="ghost" className="w-full text-muted-foreground hover:text-red-600 dark:hover:text-red-400">
+          <ShieldOff size={18} className="mr-2" />
+          Sign out of all devices
         </Button>
       </form>
     </div>

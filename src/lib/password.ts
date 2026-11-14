@@ -11,6 +11,11 @@ const KEY_LENGTH = 64;
 // (see .env.example).
 const INITIAL_PASSWORD = process.env.APP_INITIAL_PASSWORD;
 
+/** First-run passwords that are public (docs, .env.example) or trivially short. */
+export function isUnsafeInitialPassword(value: string) {
+  return value.length < 8 || ['change-me', 'changeme', 'password', 'admin'].includes(value.toLowerCase());
+}
+
 async function hashPassword(password: string): Promise<string> {
   const salt = randomBytes(16).toString('hex');
   const derivedKey = (await scryptAsync(password, salt, KEY_LENGTH)) as Buffer;
@@ -51,6 +56,13 @@ export async function verifyPassword(password: string): Promise<boolean> {
   if (!INITIAL_PASSWORD) {
     console.warn(
       '[auth] No password configured: set APP_INITIAL_PASSWORD in .env.local on first install.'
+    );
+    return false;
+  }
+
+  if (isUnsafeInitialPassword(INITIAL_PASSWORD)) {
+    console.warn(
+      '[auth] APP_INITIAL_PASSWORD is the example value or shorter than 8 characters: sign-in is disabled until you change it.'
     );
     return false;
   }

@@ -28,6 +28,9 @@ export default function LoginPage() {
               <input
                 type="password"
                 name="password"
+                aria-label="Password"
+                autoComplete="current-password"
+                autoFocus
                 className={`w-full px-4 py-3 rounded-xl border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 transition-colors ${
                   state?.error ? "border-red-500" : "border-border"
                 }`}

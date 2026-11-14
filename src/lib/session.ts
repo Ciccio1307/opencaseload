@@ -2,17 +2,32 @@ import 'server-only';
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 
+/** HS256 needs a key at least as long as its 256-bit output. */
+export const MIN_SECRET_LENGTH = 32;
+
 const secretKey = process.env.SESSION_SECRET;
 if (!secretKey) {
   throw new Error('SESSION_SECRET is not set: add it to .env.local (see .env.example)');
 }
+// Values published in .env.example and the docs: anyone could forge sessions.
+const PUBLIC_PLACEHOLDERS = ['change-me-with-a-long-random-string', 'your-session-secret'];
+if (PUBLIC_PLACEHOLDERS.includes(secretKey)) {
+  throw new Error('SESSION_SECRET is still the example value: generate one with `openssl rand -base64 32`');
+}
+if (secretKey.length < MIN_SECRET_LENGTH) {
+  throw new Error(
+    `SESSION_SECRET must be at least ${MIN_SECRET_LENGTH} characters: generate one with \`openssl rand -base64 32\``
+  );
+}
 const encodedKey = new TextEncoder().encode(secretKey);
 
-const SESSION_COOKIE = 'session';
+export const SESSION_COOKIE_NAME = 'session';
 const SESSION_DURATION_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
-type SessionPayload = {
+export type SessionPayload = {
   authorized: true;
+  /** Session epoch at sign-in (see lib/sessionEpoch.ts). */
+  epoch: number;
 };
 
 async function encrypt(payload: SessionPayload, expiresAt: Date) {
@@ -23,23 +38,28 @@ async function encrypt(payload: SessionPayload, expiresAt: Date) {
     .sign(encodedKey);
 }
 
-async function decrypt(token: string | undefined) {
+/** Verified payload of a session token, or null if missing, forged or expired. */
+export async function decrypt(token: string | undefined): Promise<SessionPayload | null> {
   if (!token) return null;
   try {
-    const { payload } = await jwtVerify<SessionPayload>(token, encodedKey, {
+    const { payload } = await jwtVerify<Partial<SessionPayload>>(token, encodedKey, {
       algorithms: ['HS256'],
     });
-    return payload;
+    if (payload.authorized !== true) return null;
+    // Tokens issued before epochs existed count as epoch 0.
+    const epoch = Number.isSafeInteger(payload.epoch) ? (payload.epoch as number) : 0;
+    return { authorized: true, epoch };
   } catch {
     return null;
   }
 }
 
-export async function createSession() {
+/** Issues the session cookie for the given epoch. */
+export async function createSession(epoch: number) {
   const expiresAt = new Date(Date.now() + SESSION_DURATION_MS);
-  const token = await encrypt({ authorized: true }, expiresAt);
+  const token = await encrypt({ authorized: true, epoch }, expiresAt);
   const cookieStore = await cookies();
-  cookieStore.set(SESSION_COOKIE, token, {
+  cookieStore.set(SESSION_COOKIE_NAME, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
@@ -50,20 +70,19 @@ export async function createSession() {
 
 export async function deleteSession() {
   const cookieStore = await cookies();
-  cookieStore.delete(SESSION_COOKIE);
+  cookieStore.delete(SESSION_COOKIE_NAME);
 }
 
-/** Lettura ottimistica della sessione dal cookie (usabile in proxy.ts). */
+/**
+ * Optimistic check: the signature is valid and not expired (used by
+ * proxy.ts). It does not know about revoked epochs; lib/dal.ts does.
+ */
 export async function getSessionFromToken(token: string | undefined) {
-  const payload = await decrypt(token);
-  return payload?.authorized === true;
+  return (await decrypt(token)) !== null;
 }
 
-/** Lettura della sessione lato server (Server Actions / Server Components). */
+/** Verified payload of the current request's session cookie. */
 export async function getSession() {
   const cookieStore = await cookies();
-  const token = cookieStore.get(SESSION_COOKIE)?.value;
-  return getSessionFromToken(token);
+  return decrypt(cookieStore.get(SESSION_COOKIE_NAME)?.value);
 }
-
-export const SESSION_COOKIE_NAME = SESSION_COOKIE;
