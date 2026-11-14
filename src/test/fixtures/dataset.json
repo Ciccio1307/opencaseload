@@ -1,0 +1,1176 @@
+{
+  "patients": [
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000001",
+      "name": "Aoife O'Connor",
+      "parent_contact": "+353 87 000 0001",
+      "notes": "Apostrophe in the name (SQL quoting).",
+      "created_at": "2025-09-01T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000002",
+      "name": "Niccolò Ğür-Ñúñez",
+      "parent_contact": "mamma.niccolo@example.invalid",
+      "notes": "Accents and non-Latin letters.",
+      "created_at": "2025-09-02T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000003",
+      "name": "محمد الأحمد",
+      "parent_contact": "",
+      "notes": "Right-to-left script, no contact.",
+      "created_at": "2025-09-03T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000004",
+      "name": "李小龙",
+      "parent_contact": "+86 000 0000 0000",
+      "notes": "CJK characters.",
+      "created_at": "2025-09-04T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000005",
+      "name": "Zoë 🌈 Smith",
+      "parent_contact": "07000 000003",
+      "notes": "Emoji (astral plane, surrogate pairs).",
+      "created_at": "2025-09-05T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000006",
+      "name": "<script>alert(1)</script>",
+      "parent_contact": "\"><img src=x onerror=alert(1)>",
+      "notes": "XSS payloads must render as text.",
+      "created_at": "2025-09-06T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000007",
+      "name": "=HYPERLINK(\"http://evil.invalid\",\"x\")",
+      "parent_contact": "+1-000",
+      "notes": "@SUM(1+1)*cmd|/C calc!A0",
+      "created_at": "2025-09-07T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000008",
+      "name": "Robert'); DROP TABLE patients;--",
+      "parent_contact": "' OR '1'='1",
+      "notes": "SQL injection strings stored verbatim.",
+      "created_at": "2025-09-08T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000009",
+      "name": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "parent_contact": "999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
+      "notes": "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
+      "created_at": "2025-09-09T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000010",
+      "name": "X",
+      "parent_contact": "",
+      "notes": "",
+      "created_at": "2025-09-10T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000011",
+      "name": "Line\nBreak  Tabs\tName",
+      "parent_contact": "multi\nline",
+      "notes": "First line\nSecond line\r\nThird line",
+      "created_at": "2025-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000012",
+      "name": "../../etc/passwd",
+      "parent_contact": "C:\\Windows\\system32",
+      "notes": "Path characters (export file names).",
+      "created_at": "2025-09-12T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000013",
+      "name": "NULL",
+      "parent_contact": "undefined",
+      "notes": "null",
+      "created_at": "2025-09-13T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000014",
+      "name": "%_\\ wildcard",
+      "parent_contact": "*",
+      "notes": "LIKE wildcards.",
+      "created_at": "2025-09-14T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000015",
+      "name": "Bea Esposito",
+      "parent_contact": "+39 375720453",
+      "notes": "",
+      "created_at": "2025-09-15T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000016",
+      "name": "Dario Verdi",
+      "parent_contact": "+39 373730013",
+      "notes": "",
+      "created_at": "2025-09-16T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000017",
+      "name": "Kai Bianchi",
+      "parent_contact": "+39 301599861",
+      "notes": "",
+      "created_at": "2025-09-17T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000018",
+      "name": "Ada Romano",
+      "parent_contact": "+39 358183010",
+      "notes": "Twice a week",
+      "created_at": "2025-09-18T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000019",
+      "name": "Kai Verdi",
+      "parent_contact": "+39 322804204",
+      "notes": "Twice a week",
+      "created_at": "2025-09-19T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000020",
+      "name": "Ivo Colombo",
+      "parent_contact": "+39 332907782",
+      "notes": "",
+      "created_at": "2025-09-20T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000021",
+      "name": "Bea Bianchi",
+      "parent_contact": "+39 381950682",
+      "notes": "",
+      "created_at": "2025-09-21T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000022",
+      "name": "Carlo Greco",
+      "parent_contact": "+39 384957827",
+      "notes": "",
+      "created_at": "2025-09-22T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000023",
+      "name": "Dario Greco",
+      "parent_contact": "+39 396117608",
+      "notes": "Prefers afternoons",
+      "created_at": "2025-09-23T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000024",
+      "name": "Ada Verdi",
+      "parent_contact": "+39 300883018",
+      "notes": "",
+      "created_at": "2025-09-24T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000025",
+      "name": "Jade Colombo",
+      "parent_contact": "+39 320123292",
+      "notes": "Fine motor skills",
+      "created_at": "2025-09-25T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000026",
+      "name": "Mia Ricci",
+      "parent_contact": "+39 338828341",
+      "notes": "Fine motor skills",
+      "created_at": "2025-09-26T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000027",
+      "name": "Kai Rossi",
+      "parent_contact": "+39 385691530",
+      "notes": "",
+      "created_at": "2025-09-27T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000028",
+      "name": "Hana Bianchi",
+      "parent_contact": "+39 364237223",
+      "notes": "",
+      "created_at": "2025-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000029",
+      "name": "Carlo Romano",
+      "parent_contact": "+39 382368983",
+      "notes": "Fine motor skills",
+      "created_at": "2025-09-29T00:00:00.000Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-4000-8000-000000000030",
+      "name": "Jade Rossi",
+      "parent_contact": "+39 356709768",
+      "notes": "",
+      "created_at": "2025-09-30T00:00:00.000Z"
+    }
+  ],
+  "sessions": [
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000001",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000001",
+      "date": "2026-03-28T22:30:00.000Z",
+      "duration_minutes": 60,
+      "status": "scheduled",
+      "notes": "Night before spring DST change"
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000002",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000002",
+      "date": "2026-03-29T01:30:00.000Z",
+      "duration_minutes": 60,
+      "status": "completed",
+      "notes": "03:30 Rome, just after the clocks go forward"
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000003",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000003",
+      "date": "2026-10-25T00:30:00.000Z",
+      "duration_minutes": 60,
+      "status": "absent",
+      "notes": "02:30 Rome, first pass of the repeated hour"
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000004",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000004",
+      "date": "2026-10-25T01:30:00.000Z",
+      "duration_minutes": 60,
+      "status": "to_recover",
+      "notes": "02:30 Rome, second pass of the repeated hour"
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000005",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000005",
+      "date": "2026-10-31T23:30:00.000Z",
+      "duration_minutes": 60,
+      "status": "recovered",
+      "notes": "00:30 on 1 Nov in Rome, 31 Oct in UTC"
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000006",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000006",
+      "date": "2026-12-31T23:30:00.000Z",
+      "duration_minutes": 60,
+      "status": "scheduled",
+      "notes": "New Year in Rome, still 2026 in UTC"
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000007",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000007",
+      "date": "2028-02-29T10:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "completed",
+      "notes": "Leap day"
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000008",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000008",
+      "date": "2026-11-08T23:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "absent",
+      "notes": "Exactly midnight in Rome"
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000009",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000009",
+      "date": "2026-11-08T22:59:00.000Z",
+      "duration_minutes": 60,
+      "status": "to_recover",
+      "notes": "23:59 in Rome"
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000010",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000001",
+      "date": "2026-11-02T08:00:00.000Z",
+      "duration_minutes": 1,
+      "status": "completed",
+      "notes": "Shortest session"
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000011",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000002",
+      "date": "2026-11-02T08:00:00.000Z",
+      "duration_minutes": 480,
+      "status": "completed",
+      "notes": "Longest session (8 h)"
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000012",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000015",
+      "date": "2026-11-09T14:00:00.000Z",
+      "duration_minutes": 45,
+      "status": "completed",
+      "notes": "Group session"
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000013",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000016",
+      "date": "2026-11-09T14:00:00.000Z",
+      "duration_minutes": 45,
+      "status": "completed",
+      "notes": "Group session"
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000014",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000017",
+      "date": "2026-11-09T14:00:00.000Z",
+      "duration_minutes": 45,
+      "status": "absent",
+      "notes": "Group session"
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000015",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000006",
+      "date": "2026-11-03T09:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "completed",
+      "notes": "<b>bold?</b> & \"quotes\" 'single' `ticks`"
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000016",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000007",
+      "date": "2026-11-03T10:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "absent",
+      "notes": "=1+1"
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000017",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000029",
+      "date": "2026-11-05T17:30:00.000Z",
+      "duration_minutes": 30,
+      "status": "absent",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000018",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000013",
+      "date": "2026-10-13T09:30:00.000Z",
+      "duration_minutes": 30,
+      "status": "completed",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000019",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000002",
+      "date": "2026-11-06T12:30:00.000Z",
+      "duration_minutes": 90,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000020",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000022",
+      "date": "2026-12-15T14:30:00.000Z",
+      "duration_minutes": 60,
+      "status": "completed",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000021",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000008",
+      "date": "2026-12-03T07:30:00.000Z",
+      "duration_minutes": 60,
+      "status": "completed",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000022",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000023",
+      "date": "2026-12-19T13:30:00.000Z",
+      "duration_minutes": 45,
+      "status": "completed",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000023",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000018",
+      "date": "2026-11-23T08:30:00.000Z",
+      "duration_minutes": 60,
+      "status": "absent",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000024",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000030",
+      "date": "2026-11-09T08:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000025",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000024",
+      "date": "2026-10-30T07:00:00.000Z",
+      "duration_minutes": 30,
+      "status": "absent",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000026",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000018",
+      "date": "2026-10-31T15:30:00.000Z",
+      "duration_minutes": 60,
+      "status": "to_recover",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000027",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000025",
+      "date": "2026-09-08T13:30:00.000Z",
+      "duration_minutes": 90,
+      "status": "completed",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000028",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000009",
+      "date": "2026-11-14T13:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000029",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000001",
+      "date": "2026-10-24T07:00:00.000Z",
+      "duration_minutes": 90,
+      "status": "recovered",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000030",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000010",
+      "date": "2026-09-30T17:30:00.000Z",
+      "duration_minutes": 90,
+      "status": "to_recover",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000031",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000013",
+      "date": "2026-11-14T15:00:00.000Z",
+      "duration_minutes": 90,
+      "status": "absent",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000032",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000001",
+      "date": "2026-11-28T15:30:00.000Z",
+      "duration_minutes": 45,
+      "status": "completed",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000033",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000010",
+      "date": "2026-11-14T09:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000034",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000030",
+      "date": "2026-10-16T17:00:00.000Z",
+      "duration_minutes": 30,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000035",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000026",
+      "date": "2026-09-05T17:30:00.000Z",
+      "duration_minutes": 60,
+      "status": "to_recover",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000036",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000021",
+      "date": "2026-09-17T07:30:00.000Z",
+      "duration_minutes": 90,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000037",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000028",
+      "date": "2026-12-22T10:00:00.000Z",
+      "duration_minutes": 90,
+      "status": "recovered",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000038",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000009",
+      "date": "2026-09-22T09:30:00.000Z",
+      "duration_minutes": 90,
+      "status": "recovered",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000039",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000011",
+      "date": "2026-09-12T11:30:00.000Z",
+      "duration_minutes": 60,
+      "status": "absent",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000040",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000003",
+      "date": "2026-10-12T14:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000041",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000029",
+      "date": "2026-11-17T13:00:00.000Z",
+      "duration_minutes": 90,
+      "status": "to_recover",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000042",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000030",
+      "date": "2026-11-06T16:00:00.000Z",
+      "duration_minutes": 45,
+      "status": "absent",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000043",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000019",
+      "date": "2026-10-11T07:30:00.000Z",
+      "duration_minutes": 30,
+      "status": "to_recover",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000044",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000011",
+      "date": "2026-11-03T17:30:00.000Z",
+      "duration_minutes": 30,
+      "status": "recovered",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000045",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000014",
+      "date": "2026-09-01T13:00:00.000Z",
+      "duration_minutes": 30,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000046",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000030",
+      "date": "2026-12-03T08:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "completed",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000047",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000015",
+      "date": "2026-11-01T10:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "completed",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000048",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000011",
+      "date": "2026-10-28T13:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "absent",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000049",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000030",
+      "date": "2026-12-21T15:30:00.000Z",
+      "duration_minutes": 60,
+      "status": "recovered",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000050",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000002",
+      "date": "2026-09-11T12:30:00.000Z",
+      "duration_minutes": 90,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000051",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000003",
+      "date": "2026-11-20T13:00:00.000Z",
+      "duration_minutes": 90,
+      "status": "recovered",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000052",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000030",
+      "date": "2026-10-18T08:00:00.000Z",
+      "duration_minutes": 45,
+      "status": "completed",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000053",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000005",
+      "date": "2026-09-19T15:00:00.000Z",
+      "duration_minutes": 30,
+      "status": "completed",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000054",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000013",
+      "date": "2026-09-07T14:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "absent",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000055",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000025",
+      "date": "2026-10-23T11:00:00.000Z",
+      "duration_minutes": 30,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000056",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000009",
+      "date": "2026-12-10T08:30:00.000Z",
+      "duration_minutes": 60,
+      "status": "recovered",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000057",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000025",
+      "date": "2026-11-18T07:00:00.000Z",
+      "duration_minutes": 90,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000058",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000024",
+      "date": "2026-11-16T11:30:00.000Z",
+      "duration_minutes": 45,
+      "status": "recovered",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000059",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000021",
+      "date": "2026-11-12T09:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "completed",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000060",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000029",
+      "date": "2026-12-01T07:30:00.000Z",
+      "duration_minutes": 90,
+      "status": "to_recover",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000061",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000030",
+      "date": "2026-11-11T08:30:00.000Z",
+      "duration_minutes": 30,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000062",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000018",
+      "date": "2026-10-06T07:00:00.000Z",
+      "duration_minutes": 45,
+      "status": "absent",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000063",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000016",
+      "date": "2026-09-26T08:00:00.000Z",
+      "duration_minutes": 30,
+      "status": "completed",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000064",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000013",
+      "date": "2026-09-27T11:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000065",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000008",
+      "date": "2026-10-08T10:30:00.000Z",
+      "duration_minutes": 60,
+      "status": "recovered",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000066",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000015",
+      "date": "2026-12-26T08:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "absent",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000067",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000004",
+      "date": "2026-11-08T17:30:00.000Z",
+      "duration_minutes": 45,
+      "status": "absent",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000068",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000018",
+      "date": "2026-09-13T09:30:00.000Z",
+      "duration_minutes": 30,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000069",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000027",
+      "date": "2026-09-16T10:00:00.000Z",
+      "duration_minutes": 90,
+      "status": "completed",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000070",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000009",
+      "date": "2026-10-25T08:00:00.000Z",
+      "duration_minutes": 30,
+      "status": "recovered",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000071",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000021",
+      "date": "2026-12-07T13:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "completed",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000072",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000018",
+      "date": "2026-10-08T14:30:00.000Z",
+      "duration_minutes": 60,
+      "status": "completed",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000073",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000023",
+      "date": "2026-12-25T07:30:00.000Z",
+      "duration_minutes": 45,
+      "status": "absent",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000074",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000006",
+      "date": "2026-11-02T15:00:00.000Z",
+      "duration_minutes": 45,
+      "status": "absent",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000075",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000015",
+      "date": "2026-12-16T17:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "absent",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000076",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000004",
+      "date": "2026-09-15T16:30:00.000Z",
+      "duration_minutes": 60,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000077",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000029",
+      "date": "2026-11-12T16:30:00.000Z",
+      "duration_minutes": 45,
+      "status": "to_recover",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000078",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000005",
+      "date": "2026-12-05T10:00:00.000Z",
+      "duration_minutes": 90,
+      "status": "completed",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000079",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000005",
+      "date": "2026-11-04T11:30:00.000Z",
+      "duration_minutes": 60,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000080",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000014",
+      "date": "2026-11-30T13:30:00.000Z",
+      "duration_minutes": 30,
+      "status": "absent",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000081",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000019",
+      "date": "2026-09-22T08:00:00.000Z",
+      "duration_minutes": 45,
+      "status": "recovered",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000082",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000017",
+      "date": "2026-09-10T17:30:00.000Z",
+      "duration_minutes": 60,
+      "status": "to_recover",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000083",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000015",
+      "date": "2026-11-10T14:00:00.000Z",
+      "duration_minutes": 45,
+      "status": "to_recover",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000084",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000009",
+      "date": "2026-09-23T12:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "to_recover",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000085",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000023",
+      "date": "2026-11-22T12:00:00.000Z",
+      "duration_minutes": 30,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000086",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000026",
+      "date": "2026-09-04T08:30:00.000Z",
+      "duration_minutes": 90,
+      "status": "recovered",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000087",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000017",
+      "date": "2026-12-20T07:00:00.000Z",
+      "duration_minutes": 90,
+      "status": "to_recover",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000088",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000029",
+      "date": "2026-11-07T13:00:00.000Z",
+      "duration_minutes": 45,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000089",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000019",
+      "date": "2026-11-18T14:30:00.000Z",
+      "duration_minutes": 60,
+      "status": "to_recover",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000090",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000016",
+      "date": "2026-09-04T14:30:00.000Z",
+      "duration_minutes": 90,
+      "status": "absent",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000091",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000002",
+      "date": "2026-11-26T10:30:00.000Z",
+      "duration_minutes": 60,
+      "status": "completed",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000092",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000001",
+      "date": "2026-10-16T11:30:00.000Z",
+      "duration_minutes": 45,
+      "status": "to_recover",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000093",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000013",
+      "date": "2026-11-20T17:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000094",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000017",
+      "date": "2026-11-27T13:30:00.000Z",
+      "duration_minutes": 60,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000095",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000017",
+      "date": "2026-12-15T14:00:00.000Z",
+      "duration_minutes": 90,
+      "status": "absent",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000096",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000003",
+      "date": "2026-09-03T10:00:00.000Z",
+      "duration_minutes": 45,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000097",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000012",
+      "date": "2026-10-11T12:30:00.000Z",
+      "duration_minutes": 90,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000098",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000014",
+      "date": "2026-11-20T13:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "completed",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000099",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000019",
+      "date": "2026-12-21T15:00:00.000Z",
+      "duration_minutes": 45,
+      "status": "absent",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000100",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000010",
+      "date": "2026-12-15T10:30:00.000Z",
+      "duration_minutes": 60,
+      "status": "to_recover",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000101",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000018",
+      "date": "2026-11-08T07:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "recovered",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000102",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000015",
+      "date": "2026-10-01T09:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "to_recover",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000103",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000007",
+      "date": "2026-12-16T11:30:00.000Z",
+      "duration_minutes": 45,
+      "status": "recovered",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000104",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000003",
+      "date": "2026-11-22T15:00:00.000Z",
+      "duration_minutes": 45,
+      "status": "completed",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000105",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000027",
+      "date": "2026-10-15T10:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000106",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000012",
+      "date": "2026-10-02T15:30:00.000Z",
+      "duration_minutes": 90,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000107",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000017",
+      "date": "2026-12-19T08:30:00.000Z",
+      "duration_minutes": 30,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000108",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000028",
+      "date": "2026-10-29T16:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "recovered",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000109",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000017",
+      "date": "2026-09-22T11:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "recovered",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000110",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000022",
+      "date": "2026-11-27T14:30:00.000Z",
+      "duration_minutes": 90,
+      "status": "recovered",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000111",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000028",
+      "date": "2026-11-23T11:00:00.000Z",
+      "duration_minutes": 90,
+      "status": "absent",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000112",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000028",
+      "date": "2026-12-22T10:00:00.000Z",
+      "duration_minutes": 30,
+      "status": "absent",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000113",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000012",
+      "date": "2026-11-22T16:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000114",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000015",
+      "date": "2026-10-18T16:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "completed",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000115",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000014",
+      "date": "2026-09-12T11:00:00.000Z",
+      "duration_minutes": 45,
+      "status": "recovered",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000116",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000023",
+      "date": "2026-09-12T11:30:00.000Z",
+      "duration_minutes": 30,
+      "status": "absent",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000117",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000024",
+      "date": "2026-09-12T10:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "absent",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000118",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000024",
+      "date": "2026-10-05T16:30:00.000Z",
+      "duration_minutes": 60,
+      "status": "to_recover",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000119",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000004",
+      "date": "2026-10-23T11:00:00.000Z",
+      "duration_minutes": 60,
+      "status": "scheduled",
+      "notes": ""
+    },
+    {
+      "id": "bbbbbbbb-0000-4000-8000-000000000120",
+      "patient_id": "aaaaaaaa-0000-4000-8000-000000000024",
+      "date": "2026-11-02T10:30:00.000Z",
+      "duration_minutes": 45,
+      "status": "completed",
+      "notes": ""
+    }
+  ]
+}

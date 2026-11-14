@@ -1,0 +1,39 @@
+# Throwaway database for the integration tests (npm run test:integration).
+# Postgres + PostgREST + a gateway exposing /rest/v1 like Supabase does.
+# Credentials here are test-only and the stack listens on localhost only.
+name: opencaseload-test
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_PASSWORD: postgres-test-password
+    volumes:
+      - ./supabase/test/00-roles.sql:/docker-entrypoint-initdb.d/00-roles.sql:ro
+      - ./supabase/schema.sql:/docker-entrypoint-initdb.d/10-schema.sql:ro
+      - ./supabase/test/20-grants.sql:/docker-entrypoint-initdb.d/20-grants.sql:ro
+      - ./supabase/seed/test-data.sql:/docker-entrypoint-initdb.d/30-seed.sql:ro
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 1s
+      retries: 30
+    tmpfs: /var/lib/postgresql/data
+
+  rest:
+    image: postgrest/postgrest:v12.2.3
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGRST_DB_URI: postgres://authenticator:authenticator-test-password@db:5432/postgres
+      PGRST_DB_SCHEMAS: public
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: opencaseload-integration-test-jwt-secret-0000
+
+  gateway:
+    image: nginx:1.27-alpine
+    depends_on: [rest]
+    ports:
+      - "127.0.0.1:54321:80"
+    volumes:
+      - ./supabase/test/nginx.conf:/etc/nginx/conf.d/default.conf:ro
