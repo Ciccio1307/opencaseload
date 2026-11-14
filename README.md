@@ -76,7 +76,7 @@ cp .env.example .env.local
 | `SUPABASE_URL` | ✅ | Your Supabase project URL |
 | `SUPABASE_SERVICE_ROLE_KEY` | ✅ | Service role key (server only) |
 | `SESSION_SECRET` | ✅ | Random string used to sign cookies (`openssl rand -base64 32`) |
-| `APP_INITIAL_PASSWORD` | first run | Password until you change it from Settings |
+| `APP_INITIAL_PASSWORD` | first run | Password until you change it from Settings (at least 8 characters, not the example value) |
 | `NEXT_PUBLIC_APP_NAME` | — | App name (default `OpenCaseload`) |
 | `NEXT_PUBLIC_APP_SHORT_NAME` | — | Short name for the home-screen icon |
 | `NEXT_PUBLIC_APP_DESCRIPTION` | — | Manifest and SEO description |
@@ -97,6 +97,8 @@ right away from **Settings**. Done.
 **Upgrading an existing database?** Run the files in
 [`supabase/migrations/`](supabase/migrations) you have not applied yet, in date
 order, from the Supabase SQL Editor. `schema.sql` is only for new projects.
+In particular `20261114_atomic_login_throttle.sql` makes sign-in throttling
+safe against parallel requests: until it runs, the app logs a warning.
 
 ## ☁️ Putting it online
 
@@ -119,6 +121,9 @@ OpenCaseload stores names and contacts of real people, often minors. So:
   from the server, with the service role key.
 - Row Level Security is enabled with no public policies: the anon key cannot
   read anything.
+- Sign-in is throttled (5 attempts per 15 minutes), changing the password signs
+  out every other device, and Settings can sign out all devices at once.
+- See [SECURITY_REPORT.md](SECURITY_REPORT.md) for the latest audit.
 - For screenshots, demos and bug reports, use **invented data only**.
 
 Keep regular backups and retain data according to the rules that apply to you
@@ -138,17 +143,25 @@ starting point.
 src/
   app/                 pages, Server Components and Server Actions
   components/          UI (shadcn/ui + app shell)
-  lib/                 auth, session, Supabase, exports, branding
+  lib/                 auth, session, Supabase, validation, dates, exports, branding
   types/               shared types
+  test/                test helpers, dataset fixture, integration tests
+  **/*.test.ts         unit tests, next to the code they cover (Vitest)
 supabase/
   schema.sql           database schema (new projects)
   migrations/          changes for existing databases
+  seed/test-data.sql   invented test data (scripts/generate-test-data.mjs)
+  test/                roles and gateway for the local test database
+docker-compose.test.yml  throwaway Postgres + PostgREST for integration tests
 docs/logo/             logo: mark.svg (symbol) and logo.svg (full), SVG
 docs/screenshots/      README images (invented data)
 ```
 
 **Stack:** Next.js 16 (App Router, Server Actions) · React 19 · TypeScript ·
-Tailwind CSS v4 · shadcn/ui · Supabase (PostgreSQL) · jsPDF · SheetJS.
+Tailwind CSS v4 · shadcn/ui · Supabase (PostgreSQL) · jsPDF · SheetJS · Vitest.
+
+Architecture, data flows and known technical debt are described in
+[ARCHITECTURE_AUDIT.md](ARCHITECTURE_AUDIT.md).
 
 ## 🗺️ Where it is going
 
@@ -157,9 +170,11 @@ Tailwind CSS v4 · shadcn/ui · Supabase (PostgreSQL) · jsPDF · SheetJS.
 - [x] Timezone-safe month filtering
 - [ ] Supabase Auth with a first-run setup wizard
 - [x] Rate limiting on sign-in
-- [ ] CSV export and replacement of the unmaintained `xlsx` dependency
-- [x] CI: lint, type check and build on every push
-- [ ] Automated tests
+- [ ] CSV export; SheetJS is now 0.20.3 from its official CDN (npm has only 0.18.5)
+- [x] CI: lint, type check, tests and build on every push
+- [x] Unit tests (Vitest): dates and time zones, validation, auth, throttling, exports
+- [x] Integration tests against a real Postgres + PostgREST (RLS, constraints, auth flow)
+- [ ] Browser end-to-end tests in CI
 - [x] Dark mode, following the system setting
 - [ ] Docker Compose for self-hosting
 
@@ -173,7 +188,13 @@ welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md): it is short.
 ```bash
 npm run lint
 npx tsc --noEmit
+npm test
 npm run build
+
+# Integration tests (needs Docker)
+docker compose -f docker-compose.test.yml up -d --wait
+npm run test:integration
+docker compose -f docker-compose.test.yml down
 ```
 
 For security issues, write privately instead of opening a public issue: see
